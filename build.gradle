@@ -1,8 +1,10 @@
 plugins {
-    id 'com.palantir.docker' version '0.26.0'
-    id 'com.palantir.docker-run' version '0.26.0'
+    id 'com.palantir.docker' version '0.35.0'
+    id 'com.palantir.docker-run' version '0.35.0'
     id 'org.springframework.boot' version '2.4.0-M3'
-    id "io.spring.dependency-management" version "1.0.11.RELEASE"
+//    id 'org.springframework.boot' version '3.2.3'
+//    id "io.spring.dependency-management" version "1.0.11.RELEASE"
+    id "io.spring.dependency-management" version "1.1.4"
     id 'java'
     id 'idea'
     id 'eclipse'
@@ -82,11 +84,12 @@ bootRun {
 docker {
     def dockerImageName = "dhavaldalal/fraud-checker-service"
     name "$dockerImageName:$version"
+//    tag 'latest'
     dockerfile file('Dockerfile')
     // To directly reference the Jar file in the Dockerfile using ARG JAR_FILE
     def artifact = "${project.name}-${project.version}.jar"
     // copies artifact + Dockerfile to the build context
-    files "${libsDir}/$artifact", "$projectDir/docker/$dockerImageName/Dockerfile"
+    files "${libsDirectory}/$artifact", "$projectDir/docker/$dockerImageName/Dockerfile"
 
     //
     // ├── build
@@ -102,7 +105,8 @@ docker {
 
     // passing in the jar file location via --build-arg key=value
     buildArgs([JAR_FILE: artifact, BUILD_VERSION: "$version"])
-    pull false
+    labels(['key': 'value'])
+    pull true
     noCache true
 }
 

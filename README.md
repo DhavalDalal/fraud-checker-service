@@ -78,6 +78,10 @@ Note: you can put ```-i``` at the end of each to get further information while r
         * Open menu Run | Edit Configurations...
         * Click the + button and Select 'Remote' from Templates
 
+### To Check Gradle Properties and tasks
+1. Properties --> ```gradle :properties```
+2. All Tasks --> ```gradle tasks --all```
+
 ### Getting 42 crunch token
 1. Using Springfox, navigate to [http://localhost:9001/swagger-ui/index.html](http://localhost:9001/swagger-ui/index.html) and click on [http://localhost:9001/v3/api-docs](http://localhost:9001/v3/api-docs) to get the JSON version of the API docs 
 2. In order to generate the YAML version, go to [https://editor.swagger.io](https://editor.swagger.io) and paste the above JSON file.  Go to Edit | Convert to YAML and save the file in YAML format.
