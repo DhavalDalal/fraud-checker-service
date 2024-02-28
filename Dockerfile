@@ -2,11 +2,13 @@
 # base image. This means we’ll be using Alpine Linux, which is
 # lightweight and fast. It’s bundled up with a Java installation so we
 # don’t have to worry about installing it separately.
-FROM adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
+FROM eclipse-temurin:17-jre
 
 # Create a non-root group and user
 # RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-RUN addgroup -S tsys && adduser -S dhaval -G tsys
+# RUN addgroup -S tsys && adduser -S dhaval -G tsys
+RUN addgroup tsys
+RUN adduser dhaval --ingroup tsys
 
 # Tell docker that all future commands should run as the appuser user
 # USER appuser
@@ -28,8 +30,14 @@ ENTRYPOINT ["java","-jar","-Dspring.profiles.active=development", "/fraud-checke
 # $> docker build -t dhavaldalal/fraud-checker-service:1.0.0 --build-arg BUILD_VERSION=1.0.0 .
 
 # To run this image use
-# We need --expose=9001 as EXPOSE is not a part of this Dockerfile
-# $> docker run --expose=9001 -p 9001:9001 dhavaldalal/fraud-checker-service:1.0.0
+# We need --expose=8000 as EXPOSE is not a part of this Dockerfile
+# docker run --expose=CONTAINER_PORT -p CONTAINER_PORT:HOST_PORT dhavaldalal/fraud-checker-service:1.0.0
+# $> docker run --expose=8000 -p 8000:9001 dhavaldalal/fraud-checker-service:1.0.0
+# OR simply without --expose option (target url will be --> http://localhost:8000)
+# $> docker run -p 8000:9001 dhavaldalal/fraud-checker-service:1.0.0
+# OR simply without --expose option (target url will be --> http://localhost:9001)
+# $> docker run -p 9001:9001 dhavaldalal/fraud-checker-service:1.0.0
+
 
 # To debug the container
 # $> docker run -it --rm --entrypoint sh dhavaldalal/fraud-checker-service:1.0.0
