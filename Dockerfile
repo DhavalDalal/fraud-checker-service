@@ -14,11 +14,13 @@ RUN adduser dhaval --ingroup tsys
 # USER appuser
 USER dhaval:tsys
 
+RUN echo "Working Directory = $PWD"
 # No default value set, pass one from docker build or gradle build
 ARG BUILD_VERSION
 
 # Set default value or pass one from gradle build
 ARG JAR_FILE=build/libs/*.jar
+#ARG JAR_FILE=build/libs/fraud_checker-${BUILD_VERSION}.jar
 # COPY will copy the application jar file into the image
 COPY ${JAR_FILE} fraud-checker-service.jar
 

@@ -1,7 +1,9 @@
 plugins {
     id 'com.palantir.docker' version '0.35.0'
     id 'com.palantir.docker-run' version '0.35.0'
-    id 'org.springframework.boot' version '2.4.13'
+//    id 'org.springframework.boot' version '2.4.13'
+//    id 'org.springframework.boot' version '2.7.18'
+    id 'org.springframework.boot' version '3.2.3'
 //    id "io.spring.dependency-management" version "1.0.11.RELEASE"
     id "io.spring.dependency-management" version "1.1.4"
     id 'java'
@@ -11,7 +13,7 @@ plugins {
 
 group = 'com.tsys'
 version = '1.0.0'
-sourceCompatibility = '15'
+sourceCompatibility = '17'
 
 repositories {
     mavenCentral()
@@ -22,17 +24,24 @@ repositories {
 }
 
 dependencies {
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+//    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+
+
     // For Spring Boot projects this dependency is good enough for Swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 }
 
 test {
@@ -88,7 +97,7 @@ docker {
     // To directly reference the Jar file in the Dockerfile using ARG JAR_FILE
     def artifact = "${project.name}-${project.version}.jar"
     // copies artifact + Dockerfile to the build context
-    files "${libsDirectory}/$artifact", "$projectDir/docker/$dockerImageName/Dockerfile"
+    files "build/libs/$artifact", "$projectDir/docker/Dockerfile"
 
     //
     // ├── build
@@ -103,7 +112,7 @@ docker {
     //
 
     // passing in the jar file location via --build-arg key=value
-    buildArgs([JAR_FILE: artifact, BUILD_VERSION: "$version"])
+    buildArgs([JAR_FILE: "$artifact", BUILD_VERSION: "$version"])
     labels(['key': 'value'])
     pull true
     noCache true

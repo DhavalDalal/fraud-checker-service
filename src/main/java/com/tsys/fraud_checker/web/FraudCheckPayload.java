@@ -3,8 +3,8 @@ package com.tsys.fraud_checker.web;
 import com.tsys.fraud_checker.domain.CreditCard;
 import com.tsys.fraud_checker.domain.Money;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * NOTE: Use @Valid on Complex Types

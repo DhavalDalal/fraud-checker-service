@@ -2,7 +2,7 @@ package com.tsys.fraud_checker.domain;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.Currency;
 
 public class Money {

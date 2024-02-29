@@ -10,8 +10,8 @@ import springfox.documentation.oas.web.WebMvcOpenApiTransformationFilter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotNull;
 
 // 42-crunch complains of additionalProperties set to true is not good.
 // This attribute is default to true and what is needed is to set it as false.
@@ -45,4 +45,5 @@ public class OpenApiTransformationFilter implements WebMvcOpenApiTransformationF
 
         return openApi;
     }
+
 }

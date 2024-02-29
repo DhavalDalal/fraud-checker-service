@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.logging.Logger;
 
 import static com.tsys.fraud_checker.services.VerificationServiceRouter.RouteTo.ACTUAL;
