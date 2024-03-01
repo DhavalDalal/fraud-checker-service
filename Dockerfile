@@ -54,3 +54,8 @@ ENTRYPOINT ["java","-jar","-Dspring.profiles.active=development", "/fraud-checke
 # $> docker rmi dhavaldalal/fraud-checker-service:1.0.0
 # To remove the named container
 # $> docker rm fraud-checker-service
+
+# PUSHING IMAGE TO DOCKER HUB
+# To push images
+# $> docker login
+# $> docker push dhavaldalal/fraud-checker-service:1.0.0
