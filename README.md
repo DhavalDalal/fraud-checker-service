@@ -78,10 +78,39 @@ Note: you can put ```-i``` at the end of each to get further information while r
         * Open menu Run | Edit Configurations...
         * Click the + button and Select 'Remote' from Templates
 
+## Building
 ### To Check Gradle Properties and tasks
-1. Properties --> ```gradle :properties```
-2. All Tasks --> ```gradle tasks --all```
+1. Properties, use ```gradle :properties```
+2. All Tasks, use ```gradle tasks --all```
+3. Build, use ```gradle clean build```
 
+### To Build Docker Images, Running and Stopping them using Gradle
+1. Build Docker Image, use ```gradle docker```
+2. To Push Docker Image to Docker Hub, use ```gradle dockerPush```
+3. To Run Docker Image, use ```gradle dockerRun```
+4. To Stop a running Docker Image, in another terminal, use ```gradle dockerStop```
+
+### To Build Docker Images, Running and Stopping them using Command Line
+1. Build Docker Image, use ```docker build -t dhavaldalal/fraud-checker-service:1.0.0 --build-arg BUILD_VERSION=1.0.0 .``` from within the directory where ```Dockerfile``` is present.
+2. To Push Docker Image to Docker Hub, use ```gradle dockerPush```
+3. To Run Docker Image by creating a named container ```fraud_checker```, use ```docker run --name fraud_checker --expose=8000 -p 8000:9001 dhavaldalal/fraud-checker-service:1.0.0``` and point the browser to ```http://localhost:8000```
+4. To Stop a running named container, in another terminal, use ```docker stop fraud_checker``` and to start it again, use ```docker start fraud_checker```
+
+### Getting inside Docker Image and Containers using Command Line
+1. To get inside the image for inspecting, use ```docker run -it --rm --entrypoint /bin/bash dhavaldalal/fraud-checker-service:1.0.0```
+2. To get inside the running container for inspecting, use ```docker exec -it <container_id> bash```.
+
+NOTE: You may find out the container id using ```docker ps```.  Once inside the shell (either for image or container), do a ```ps -aux``` to see the running processes.  In the container listing you should see an additional ```java``` process running the ```.jar``` file.
+
+### Removing Images and Containers using Command Line
+1. To remove the image, use ```docker rmi dhavaldalal/fraud-checker-service:1.0.0```
+2. To remove the named container, use ```docker rm fraud_checker```
+
+## Postman Collections
+1. In your workspace, click ```Environments``` and import the development environment from [Fraud_Checker_Mervice_Development.postman_environment.json](src%2Ftest%2Fresources%2FFraud_Checker_Mervice_Development.postman_environment.json)
+2. In your workspace, click ```Collections``` and import the url collections from [Fraud_Checker_Service.postman_collection.json](src%2Ftest%2Fresources%2FFraud_Checker_Service.postman_collection.json)
+
+## Security Testing
 ### Getting 42 crunch token
 1. Using Springfox, navigate to [http://localhost:9001/swagger-ui/index.html](http://localhost:9001/swagger-ui/index.html) and click on [http://localhost:9001/v3/api-docs](http://localhost:9001/v3/api-docs) to get the JSON version of the API docs 
 2. In order to generate the YAML version, go to [https://editor.swagger.io](https://editor.swagger.io) and paste the above JSON file.  Go to Edit | Convert to YAML and save the file in YAML format.
