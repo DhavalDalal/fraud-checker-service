@@ -1,0 +1,646 @@
+{
+	"openapi": "3.0.1",
+	"info": {
+		"title": "Fraud Checker Service APIs",
+		"description": "Checks for Credit Card Frauds.",
+		"contact": {
+			"name": "Dhaval Dalal",
+			"url": "https://github.com/DhavalDalal/fraud-checker-service",
+			"email": "dhaval@softwareartisan"
+		},
+		"license": {
+			"name": "Copyleft License",
+			"url": "https://www.gnu.org/licenses/gpl-3.0.html"
+		},
+		"version": "v1.0"
+	},
+	"servers": [
+		{
+			"url": "http://localhost:9001",
+			"description": "Generated server url"
+		}
+	],
+	"security": [
+		{
+			"bearerAuth": [
+
+			]
+		}
+	],
+	"tags": [
+		{
+			"name": "Fraud Check Controller",
+			"description": "Checks for Credit Card Frauds using CVV and Address Check."
+		}
+	],
+	"paths": {
+		"/validateHeaderParameterUsingPost": {
+			"post": {
+				"tags": [
+					"Fraud Check Controller"
+				],
+				"summary": "Validate Header Parameter Via Post",
+				"operationId": "validateHeaderParameterUsingPost",
+				"parameters": [
+					{
+						"name": "param",
+						"in": "header",
+						"description": "Value must be between 5 and 9999 (inclusive)",
+						"required": true,
+						"schema": {
+							"maximum": 9999,
+							"minimum": 5,
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/FraudCheckPayload"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "default response",
+						"content": {
+							"text/plain": {
+
+							}
+						}
+					}
+				}
+			}
+		},
+		"/setup/stubFor/check": {
+			"post": {
+				"tags": [
+					"test-setup-controller"
+				],
+				"description": "Stub Fraud Check payload request and its corresponding Fraud Status response.",
+				"operationId": "stub",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/FraudCheckStub"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"*/*": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/check": {
+			"post": {
+				"tags": [
+					"Fraud Check Controller"
+				],
+				"summary": "Check possibility of a fradulent transaction and return a status to the caller.",
+				"operationId": "checkFraud",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/FraudCheckPayload"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Got Fraud Status for the check",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FraudStatus"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FraudStatus"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/validateRequestParameter": {
+			"get": {
+				"tags": [
+					"Fraud Check Controller"
+				],
+				"summary": "Validate Request Parameter",
+				"operationId": "validateRequestParameter",
+				"parameters": [
+					{
+						"name": "param",
+						"in": "query",
+						"description": "Value must be between 5 and 9999 (inclusive)",
+						"required": true,
+						"schema": {
+							"maximum": 9999,
+							"minimum": 5,
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "default response",
+						"content": {
+							"text/plain": {
+
+							}
+						}
+					}
+				}
+			}
+		},
+		"/validatePathVariable/{id}": {
+			"get": {
+				"tags": [
+					"Fraud Check Controller"
+				],
+				"summary": "Validate Path Variable",
+				"operationId": "validatePathVariable",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "Value must be between 5 and 9999 (inclusive)",
+						"required": true,
+						"schema": {
+							"maximum": 9999,
+							"minimum": 5,
+							"type": "integer",
+							"format": "int32"
+						},
+						"example": 1
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "default response",
+						"content": {
+							"text/plain": {
+
+							}
+						}
+					}
+				}
+			}
+		},
+		"/validateHeaderParameter": {
+			"get": {
+				"tags": [
+					"Fraud Check Controller"
+				],
+				"summary": "Validate Header Parameter",
+				"operationId": "validateHeaderParameter",
+				"parameters": [
+					{
+						"name": "param",
+						"in": "header",
+						"description": "Value must be between 5 and 9999 (inclusive)",
+						"required": true,
+						"schema": {
+							"maximum": 9999,
+							"minimum": 5,
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "default response",
+						"content": {
+							"text/plain": {
+
+							}
+						}
+					}
+				}
+			}
+		},
+		"/setup/stubbingFor/check": {
+			"get": {
+				"tags": [
+					"test-setup-controller"
+				],
+				"description": "Switch the routing of request to Stub or Real Service",
+				"operationId": "turnStubbingForFraudCheck",
+				"parameters": [
+					{
+						"name": "on",
+						"in": "query",
+						"description": "true for routing requests to stub, false to route request to real service.",
+						"required": true,
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/setup/ping": {
+			"get": {
+				"tags": [
+					"test-setup-controller"
+				],
+				"description": "Am I alive?",
+				"operationId": "pong",
+				"responses": {
+					"200": {
+						"description": "Got Health status",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/setup/getStubs": {
+			"get": {
+				"tags": [
+					"test-setup-controller"
+				],
+				"description": "Get All the set stubs",
+				"operationId": "stubs",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Stubs"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/setup/fraudCheckDelay": {
+			"get": {
+				"tags": [
+					"test-setup-controller"
+				],
+				"description": "Setup delay time in millis for the response to be sent back for a fraud check request",
+				"operationId": "fraudCheckDelay",
+				"parameters": [
+					{
+						"name": "timeInMillis",
+						"in": "query",
+						"description": "An integer value, 0 is permissible for no delay",
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					},
+					{
+						"name": "respondIn",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/ping": {
+			"get": {
+				"tags": [
+					"Fraud Check Controller"
+				],
+				"summary": "Am I alive?",
+				"operationId": "pong_1",
+				"responses": {
+					"200": {
+						"description": "Got Health status",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"ValidationError": {
+				"type": "object",
+				"properties": {
+					"fieldName": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					}
+				}
+			},
+			"ValidationErrorsResponse": {
+				"type": "object",
+				"properties": {
+					"validationErrors": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/ValidationError"
+						}
+					}
+				}
+			},
+			"CreditCard": {
+				"required": [
+					"cvv",
+					"holderName",
+					"issuingBank",
+					"number",
+					"validUntil"
+				],
+				"type": "object",
+				"properties": {
+					"number": {
+						"type": "string",
+						"description": "Card Number - Must be between 16 and 19 digits.  It can contain non-digit characters like SPACE or a dash '-'",
+						"example": "4485-2847-2013-4093"
+					},
+					"holderName": {
+						"type": "string",
+						"description": "Card Holder name"
+					},
+					"issuingBank": {
+						"type": "string",
+						"description": "Issuing of the Card"
+					},
+					"validUntil": {
+						"type": "string",
+						"description": "Expiry Date of the Card",
+						"format": "date-time"
+					},
+					"cvv": {
+						"type": "integer",
+						"description": "Card Verification Value - Must be 3 digits",
+						"format": "int32",
+						"example": 123
+					}
+				}
+			},
+			"FraudCheckPayload": {
+				"required": [
+					"charge",
+					"creditCard"
+				],
+				"type": "object",
+				"properties": {
+					"creditCard": {
+						"$ref": "#/components/schemas/CreditCard"
+					},
+					"charge": {
+						"$ref": "#/components/schemas/Money"
+					}
+				}
+			},
+			"Money": {
+				"required": [
+					"amount",
+					"currency"
+				],
+				"type": "object",
+				"properties": {
+					"currency": {
+						"type": "string",
+						"description": "Currency of the transaction",
+						"example": "INR"
+					},
+					"amount": {
+						"type": "number",
+						"description": "Amount of the transaction",
+						"format": "double",
+						"example": 1234.56
+					}
+				}
+			},
+			"FraudCheckStub": {
+				"type": "object",
+				"properties": {
+					"request": {
+						"$ref": "#/components/schemas/FraudCheckPayload"
+					},
+					"response": {
+						"$ref": "#/components/schemas/FraudStatus"
+					}
+				}
+			},
+			"FraudStatus": {
+				"type": "object",
+				"properties": {
+					"cvvStatus": {
+						"type": "string"
+					},
+					"avStatus": {
+						"type": "string"
+					},
+					"overall": {
+						"type": "string"
+					}
+				}
+			},
+			"StubProvider": {
+				"type": "object",
+				"properties": {
+					"request": {
+						"type": "object"
+					},
+					"response": {
+						"type": "object"
+					}
+				}
+			},
+			"Stubs": {
+				"type": "object",
+				"properties": {
+					"allStubs": {
+						"type": "object",
+						"additionalProperties": {
+							"$ref": "#/components/schemas/StubProvider"
+						}
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	}
+}

@@ -3,10 +3,12 @@ package com.tsys.fraud_checker.web.internal;
 import com.tsys.fraud_checker.services.StubbedDelayVerificationService;
 import com.tsys.fraud_checker.services.VerificationServiceRouter;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import static com.tsys.fraud_checker.services.VerificationServiceRouter.RouteTo.
 import static com.tsys.fraud_checker.services.VerificationServiceRouter.RouteTo.STUB;
 
 @Profile("development")
+//@Tag(name = "Test Setup Controller", description = "Sets up Routing to Real or Stubbed Service for Fraud Checking with various parameters")
 @Controller
 @RequestMapping("/setup")
 public class TestSetupController {
@@ -43,14 +46,20 @@ public class TestSetupController {
             description = "Got Health status",
             content = { @Content(schema = @Schema(title = "Health Status", implementation = String.class), mediaType = "application/json") })
     })
-    @GetMapping(value = "ping", produces = "application/json")
+    @GetMapping(value = "/ping", produces = "application/json")
     @ResponseBody
     public ResponseEntity<String> pong() {
         return ResponseEntity.ok(String.format("{ \"PONG\" : \"%s is running fine!\" }", getClass().getSimpleName()));
     }
 
-
     // url for setting up stubbed response for a url with payload
+    @Operation(description = "Stub Fraud Check payload request and its corresponding Fraud Status response.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody (
+            content = {
+                @Content(schema = @Schema(implementation = FraudCheckStub.class), mediaType = "application/json")
+            }
+        )
+    )
     @PostMapping("/stubFor/check")
     ResponseEntity<String> stub(@RequestBody FraudCheckStub fraudCheckStub) {
         final var url = "/check";
@@ -60,6 +69,7 @@ public class TestSetupController {
         return ResponseEntity.ok(String.format("{ \"url\" : %s, \"stub\" : \"%s\" }", url, fraudCheckStub));
     }
 
+    @Operation(description = "Get All the set stubs")
     @GetMapping(path = "/getStubs", produces = "application/json")
     @ResponseBody
     public ResponseEntity<Stubs> stubs() {
@@ -67,6 +77,11 @@ public class TestSetupController {
     }
 
     // url for setting up stubbed delay
+    @Operation(description = "Setup delay time in millis for the response to be sent back for a fraud check request",
+        parameters = {
+            @Parameter(name = "timeInMillis", schema = @Schema(implementation = Integer.class), description = "An integer value, 0 is permissible for no delay")
+        }
+    )
     @GetMapping("/fraudCheckDelay")
     public ResponseEntity<Void> fraudCheckDelay(@RequestParam("respondIn") int timeInMillis) {
         LOG.info(() -> String.format("Setting Delay to respond from VerificationService for %d", timeInMillis));
@@ -75,6 +90,13 @@ public class TestSetupController {
     }
 
     // url for turning stubResponses on/off
+    @Operation(description = "Switch the routing of request to Stub or Real Service",
+        parameters = {
+            @Parameter(name = "on",
+                schema = @Schema(implementation = Boolean.class),
+                description = "true for routing requests to stub, false to route request to real service.")
+        }
+    )
     @GetMapping("/stubbingFor/check")
     public ResponseEntity<Void> turnStubbingForFraudCheck(@RequestParam("on") boolean isEnabled) {
         if (isEnabled) {

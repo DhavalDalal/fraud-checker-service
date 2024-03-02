@@ -40,7 +40,7 @@ patterns and assess risk if any.
 
 ## Develop/Debug 
 ### To Start Dev Loop 
-1. In one Terminal ==> ```gradle bootRun``` or to run on another port ```gradle bootRun -PjvmArgs="-Dserver.port=10001"```
+1. In one Terminal ==> ```gradle bootRun -Dspring.profiles.active=development``` or to run on another port ```gradle bootRun -PjvmArgs="-Dserver.port=10001"```
     * To run a different profile at start-up, use ```gradle bootRun -Dspring.profiles.active=jenkins```.  If nothing is given, then the default, ```development``` profile is selected.
 2. In the second Terminal ==> ```gradle -t test``` to run tests continuously.
 3. In the IDE Terminal ==> 
@@ -116,11 +116,18 @@ NOTE: If you don't have an account on Docker Hub, please create one by visiting 
 2. In your workspace, click ```Collections``` and import the url collections from [Fraud_Checker_Service.postman_collection.json](src%2Ftest%2Fresources%2FFraud_Checker_Service.postman_collection.json)
 
 ## Swagger Documentation
+1. For Swagger UI point the browser to: [http://localhost:9001/swagger-ui/index.html](http://localhost:9001/swagger-ui/index.html) and 
+2. To get the JSON version of the API docs, click on [http://localhost:9001/api-docs](http://localhost:9001/api-docs) 
+3. To download the YAML version of the API docs, click on [http://localhost:9001/api-docs.yaml](http://localhost:9001/api-docs.yaml) 
 
+### For Grouped Documentation
+1. For Fraud Checker Specific API JSON docs, click [http://localhost:9001/api-docs/fraud-check](http://localhost:9001/api-docs/fraud-check)
+2. For Validation API JSON docs on Fraud Checker, click [http://localhost:9001/api-docs/validation-apis](http://localhost:9001/api-docs/validation-apis)
+3. For Setting up Fraud Checker for Testing JSON docs(In Development mode only), click [http://localhost:9001/api-docs/test-setup](http://localhost:9001/api-docs/test-setup) 
 
 ## Security Testing
 ### Getting 42 crunch token
-1. Using Springfox, navigate to [http://localhost:9001/swagger-ui/index.html](http://localhost:9001/swagger-ui/index.html) and click on [http://localhost:9001/v3/api-docs](http://localhost:9001/v3/api-docs) to get the JSON version of the API docs 
+1. Using Springfox, navigate to [http://localhost:9001/swagger-ui/index.html](http://localhost:9001/swagger-ui/index.html) and click on [http://localhost:9001/api-docs](http://localhost:9001/api-docs) to get the JSON version of the API docs 
 2. In order to generate the YAML version, go to [https://editor.swagger.io](https://editor.swagger.io) and paste the above JSON file.  Go to Edit | Convert to YAML and save the file in YAML format.
 3. Go to [https://platform.42crunch.com](https://platform.42crunch.com) and sign-up/sign-in
 4. Click Settings | Api Tokens | Create New Token - <<your token>>
