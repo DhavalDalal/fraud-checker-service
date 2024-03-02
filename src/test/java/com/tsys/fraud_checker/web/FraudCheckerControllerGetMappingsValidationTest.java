@@ -154,7 +154,7 @@ public class FraudCheckerControllerGetMappingsValidationTest {
 
     @Test
     public void validatesRequestHeaderParameterAtOrAboveValue5() throws Exception {
-        final var request = givenARequestFor("/validateHeader");
+        final var request = givenARequestFor("/validateHeaderParameter");
         request.header("param","100");
         final ResultActions resultActions = mockMvc.perform(request);
         thenExpect(resultActions,
@@ -164,13 +164,13 @@ public class FraudCheckerControllerGetMappingsValidationTest {
 
     @Test
     public void shoutsWhenRequestHeaderParameterIsBelow5() throws Exception {
-        final var request = givenARequestFor("/validateHeader");
+        final var request = givenARequestFor("/validateHeaderParameter");
         request.header("param","4");
         final ResultActions resultActions = mockMvc.perform(request);
         final var response = "{\n" +
                 "    \"validationErrors\": [\n" +
                 "        {\n" +
-                "            \"fieldName\": \"validateHeader.param\",\n" +
+                "            \"fieldName\": \"validateHeaderParameter.param\",\n" +
                 "            \"message\": \"must be greater than or equal to 5\"\n" +
                 "        }\n" +
                 "    ]\n" +
@@ -184,13 +184,13 @@ public class FraudCheckerControllerGetMappingsValidationTest {
 
     @Test
     public void shoutsWhenRequestHeaderParameterIsAbove9999() throws Exception {
-        final var request = givenARequestFor("/validateHeader");
+        final var request = givenARequestFor("/validateHeaderParameter");
         request.header("param","10000");
         final ResultActions resultActions = mockMvc.perform(request);
         final var response = "{\n" +
                 "    \"validationErrors\": [\n" +
                 "        {\n" +
-                "            \"fieldName\": \"validateHeader.param\",\n" +
+                "            \"fieldName\": \"validateHeaderParameter.param\",\n" +
                 "            \"message\": \"must be less than or equal to 9999\"\n" +
                 "        }\n" +
                 "    ]\n" +

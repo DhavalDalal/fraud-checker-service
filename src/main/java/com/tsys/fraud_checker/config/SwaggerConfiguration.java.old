@@ -51,4 +51,27 @@ public class SwaggerConfiguration {
                 new Contact("Dhaval Dalal", "https://dhavaldalal.wordpress.com", "dhaval@dalal.com"),
                 "Copyleft License", "https://en.wikipedia.org/wiki/Copyleft", Collections.emptyList());
     }
+
+    @Bean
+    public Docket publicApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+              .select()
+              .apis(RequestHandlerSelectors.basePackage("com.tsys.fraudchecker.web"))
+              .paths(PathSelectors.regex("/public.*"))
+              .build()
+              .groupName("fraudchecker-public")
+              .apiInfo(apiInfo());
+    }
+
+    @Bean
+    public Docket adminApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                  .select()
+                  .apis(RequestHandlerSelectors.basePackage("com.tsys.fraudchecker.web.internal"))
+                  .paths(PathSelectors.regex("/admin.*"))
+                  .apis(RequestHandlerSelectors.withMethodAnnotation(Admin.class))
+                  .build()
+                  .groupName("fraudchecker-internal")
+                  .apiInfo(apiInfo());
+      }
 }

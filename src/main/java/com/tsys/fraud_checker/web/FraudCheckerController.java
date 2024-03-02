@@ -1,12 +1,15 @@
 package com.tsys.fraud_checker.web;
 
 import com.tsys.fraud_checker.domain.FraudStatus;
-import com.tsys.fraud_checker.services.DefaultVerificationService;
 import com.tsys.fraud_checker.services.VerificationService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
+//import springfox.documentation.annotations.ApiIgnore;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -67,16 +70,16 @@ public class FraudCheckerController {
         this.verificationService = verificationService;
     }
 
-    @ApiIgnore
+    @Hidden
     @RequestMapping(method = RequestMethod.GET, produces = "text/html")
     public String index() {
         return "index.html";
     }
 
-    @ApiOperation(value = "Am I alive?", produces = "application/json")
+    @Operation(summary = "Am I alive?")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Got Health status", response = String.class),
-//            @ApiResponse(code = 429, message = "Too Many Requests")
+            @ApiResponse(responseCode = "200", description = "Got Health status", content = { @Content(schema = @Schema(title = "Health Status", implementation = String.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests")
     })
     @GetMapping(value = "ping", produces = "application/json")
     @ResponseBody
@@ -84,26 +87,31 @@ public class FraudCheckerController {
         return ResponseEntity.ok(String.format("{ \"PONG\" : \"%s is running fine!\" }", FraudCheckerController.class.getSimpleName()));
     }
 
-    @ApiOperation(value = "Validate Path Variable", produces = "text/plain")
-    // The @ApiParam annotation is for the parameters of an API resource request,
-    //  whereas @ApiModelProperty is for properties of the model.
+    @Operation(summary = "Validate Path Variable")
+    @ApiResponse(content = { @Content(mediaType = "text/plain") })
+    // The @Parameter annotation is for the parameters of an API resource request,
+    //  whereas @Schema is for properties of the model.
     @GetMapping("validatePathVariable/{id}")
     ResponseEntity<String> validatePathVariable(
             @PathVariable("id")
             @Min(value = 5, message = "A minimum value of 5 is required")
             @Max(value = 9999, message = "A maximum value of 9999 can be given")
-            @ApiParam(
-                    name = "id",
-                    type = "int",
-                    value = "a number",
-                    example = "1",
-                    required = true)
+            @Parameter(name = "id",
+                schema = @Schema (implementation = Integer.class),
+                description = "Value must be between 5 and 9999 (inclusive)",
+                example = "1",
+                required = true)
                     int id) {
         LOG.info(() -> String.format("validatePathVariable(), Got id = %d", id));
         return ResponseEntity.ok("valid");
     }
 
-    @ApiOperation(value = "Validate Request Parameter", produces = "text/plain")
+    @Operation(summary = "Validate Request Parameter",
+        parameters = {
+            @Parameter(name = "param", schema = @Schema(implementation = Integer.class), description = "Value must be between 5 and 9999 (inclusive)")
+        }
+    )
+    @ApiResponse(content = { @Content(mediaType = "text/plain") })
     @GetMapping("validateRequestParameter")
     ResponseEntity<String> validateRequestParameter(
             @RequestParam("param")
@@ -112,22 +120,39 @@ public class FraudCheckerController {
         return ResponseEntity.ok("valid");
     }
 
-    @ApiOperation(value = "Validate Header Parameter", produces = "text/plain")
-    @GetMapping("validateHeader")
-    ResponseEntity<String> validateHeader(
+    @Operation(summary = "Validate Header Parameter",
+       parameters = {
+           @Parameter(name = "param",
+               schema = @Schema(implementation = Integer.class),
+               description = "Value must be between 5 and 9999 (inclusive)")
+        }
+    )
+    @ApiResponse(content = { @Content(mediaType = "text/plain") })
+    @GetMapping("validateHeaderParameter")
+    ResponseEntity<String> validateHeaderParameter(
             @RequestHeader("param")
             @Min(5) @Max(9999) int param) {
         LOG.info(() -> String.format("validateHeader(), Got param = %d", param));
         return ResponseEntity.ok("valid");
     }
 
-    @ApiOperation(value = "Validate Header Parameter Via Post", produces = "text/plain")
-    @PostMapping("validateHeaderUsingPost")
-    ResponseEntity<String> validateHeaderUsingPost(
+    @Operation(summary = "Validate Header Parameter Via Post",
+        parameters = {
+            @Parameter(name = "param", schema = @Schema(implementation = Integer.class), description = "Value must be between 5 and 9999 (inclusive)")
+        },
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody (
+            content = {
+                @Content(schema = @Schema(implementation = FraudCheckPayload.class), mediaType = "application/json")
+            }
+        )
+    )
+    @ApiResponse(content = { @Content(mediaType = "text/plain") })
+    @PostMapping("validateHeaderParameterUsingPost")
+    ResponseEntity<String> validateHeaderParameterUsingPost(
             @RequestHeader(value = "param")
             @Min(5) @Max(9999) int param,
             @RequestBody @Valid FraudCheckPayload fraudCheckPayload) {
-        LOG.info(() -> String.format("validateHeaderUsingPost(), Got param = %d", param));
+        LOG.info(() -> String.format("validateHeaderParameterUsingPost(), Got param = %d", param));
         return ResponseEntity.ok("valid");
     }
 
@@ -153,10 +178,14 @@ public class FraudCheckerController {
      * should be validated, this field, too, needs to be annotated with
      * Valid.
      */
-    @ApiOperation(value = "Check possibility of a fradulent transaction and return a status to the caller.", consumes = "application/json", produces = "application/json", response = FraudStatus.class)
+
+    @Operation(summary = "Check possibility of a fradulent transaction and return a status to the caller.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody (content = {
+                        @Content(schema = @Schema(implementation = FraudCheckPayload.class),
+                            mediaType = "application/json") }))
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Got Fraud Status for the check", response = FraudStatus.class),
-            @ApiResponse(code = 500, message = "Internal Server Error")
+            @ApiResponse(responseCode = "200", description = "Got Fraud Status for the check", content = { @Content(schema = @Schema(title = "Fraud Status", implementation = FraudStatus.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @PostMapping(value = "check", consumes = "application/json", produces = "application/json")
     public ResponseEntity<FraudStatus> checkFraud(

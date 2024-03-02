@@ -94,7 +94,7 @@ class FraudCheckerControllerPostMappingsValidationTest {
         final var response = "{\n" +
                 "    \"validationErrors\": [\n" +
                 "        {\n" +
-                "            \"fieldName\": \"validateHeaderUsingPost.param\",\n" +
+                "            \"fieldName\": \"validateHeaderParameterUsingPost.param\",\n" +
                 "            \"message\": \"must be greater than or equal to 5\"\n" +
                 "        }\n" +
                 "    ]\n" +
@@ -127,7 +127,7 @@ class FraudCheckerControllerPostMappingsValidationTest {
         final var response = "{\n" +
                 "    \"validationErrors\": [\n" +
                 "        {\n" +
-                "            \"fieldName\": \"validateHeaderUsingPost.param\",\n" +
+                "            \"fieldName\": \"validateHeaderParameterUsingPost.param\",\n" +
                 "            \"message\": \"must be less than or equal to 9999\"\n" +
                 "        }\n" +
                 "    ]\n" +
@@ -141,7 +141,7 @@ class FraudCheckerControllerPostMappingsValidationTest {
 
 
     private MockHttpServletRequestBuilder givenAFraudCheckRequestFor(String requestBody, String headerParam) {
-        return MockMvcRequestBuilders.post("/validateHeaderUsingPost")
+        return MockMvcRequestBuilders.post("/validateHeaderParameterUsingPost")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(requestBody)

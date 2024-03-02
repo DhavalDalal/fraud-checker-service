@@ -346,7 +346,7 @@ public class FraudCheckerControllerCheckFraudValidationTest {
                 "    \"validationErrors\": [\n" +
                 "        {\n" +
                 "            \"fieldName\": \"creditCard.issuingBank\",\n" +
-                "            \"message\": \"name is required\"\n" +
+                "            \"message\": \"Issuing Bank name is required\"\n" +
                 "        }\n" +
                 "    ]\n" +
                 "}";
@@ -372,7 +372,7 @@ public class FraudCheckerControllerCheckFraudValidationTest {
                 "    \"validationErrors\": [\n" +
                 "        {\n" +
                 "            \"fieldName\": \"creditCard.issuingBank\",\n" +
-                "            \"message\": \"name is required\"\n" +
+                "            \"message\": \"Issuing Bank name is required\"\n" +
                 "        }\n" +
                 "    ]\n" +
                 "}";

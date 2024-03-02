@@ -180,7 +180,7 @@ public class DefaultVerificationServiceValidationTest {
                 .build();
 
         Throwable validationException = assertThrows(ValidationException.class, () -> defaultVerificationService.verifyTransactionAuthenticity(cardWithoutBank, chargedAmount));
-        assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.card.issuingBank: name is required");
+        assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.card.issuingBank: Issuing Bank name is required");
     }
 
     @Test
@@ -194,7 +194,7 @@ public class DefaultVerificationServiceValidationTest {
                 .build();
 
         Throwable validationException = assertThrows(ValidationException.class, () -> defaultVerificationService.verifyTransactionAuthenticity(cardEmptyBank, chargedAmount));
-        assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.card.issuingBank: name is required");
+        assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.card.issuingBank: Issuing Bank name is required");
     }
 
     @Test

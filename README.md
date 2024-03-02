@@ -109,10 +109,14 @@ NOTE: You may find out the container id using ```docker ps```.  Once inside the 
 ### Pushing Images to Docker Hub using Command Line
 1. First login using ```docker login```
 2. To push images, use ```docker push dhavaldalal/fraud-checker-service:1.0.0```
+NOTE: If you don't have an account on Docker Hub, please create one by visiting [https://hub.docker.com/](https://hub.docker.com/)
 
 ## Postman Collections
 1. In your workspace, click ```Environments``` and import the development environment from [Fraud_Checker_Mervice_Development.postman_environment.json](src%2Ftest%2Fresources%2FFraud_Checker_Mervice_Development.postman_environment.json)
 2. In your workspace, click ```Collections``` and import the url collections from [Fraud_Checker_Service.postman_collection.json](src%2Ftest%2Fresources%2FFraud_Checker_Service.postman_collection.json)
+
+## Swagger Documentation
+
 
 ## Security Testing
 ### Getting 42 crunch token

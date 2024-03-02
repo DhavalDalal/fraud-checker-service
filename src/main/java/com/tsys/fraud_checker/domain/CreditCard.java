@@ -2,7 +2,7 @@ package com.tsys.fraud_checker.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tsys.fraud_checker.spring.validators.NumberOfDigits;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.LuhnCheck;
@@ -14,10 +14,10 @@ import java.util.Objects;
 
 public class CreditCard {
 
-    @ApiModelProperty(
-            value = "Card Number - Must be between 16 and 19 digits.  It can contain non-digit characters like SPACE or a dash '-'",
+    @Schema(
+            description = "Card Number - Must be between 16 and 19 digits.  It can contain non-digit characters like SPACE or a dash '-'",
             name = "number",
-            dataType = "java.lang.String",
+            implementation = String.class,
             required = true,
             example = "4485-2847-2013-4093")
     @NotBlank(message = "Card number is required")
@@ -26,26 +26,36 @@ public class CreditCard {
     @LuhnCheck(message = "Failed Luhn check!")
     public final String number;
 
+    @Schema(
+        description = "Card Holder name",
+        name = "holderName",
+        implementation = String.class,
+        required = true)
     @NotBlank(message = "is required")
     public final String holderName;
 
-    @NotBlank(message = "name is required")
+    @Schema(
+        description = "Issuing of the Card",
+        name = "issuingBank",
+        implementation = String.class,
+        required = true)
+    @NotBlank(message = "Issuing Bank name is required")
     public final String issuingBank;
 
-    @ApiModelProperty(
-            value = "Expiry Date of the Card",
+    @Schema(
+            description = "Expiry Date of the Card",
             name = "validUntil",
-            dataType = "java.util.Date",
+            implementation = Date.class,
             required = true)
     @NotNull(message = "Expiry Date is mandatory!")
     public final Date validUntil;
 
-    //  The @ApiParam annotation is for the parameters of an API resource request,
-    //  whereas @ApiModelProperty is for properties of the model.
-    @ApiModelProperty(
-            value = "Card Verification Value - Must be 3 digits",
+    //  The @Parameter annotation is for the parameters of an API resource request,
+    //  whereas @Schema is for properties of the model.
+    @Schema(
+            description = "Card Verification Value - Must be 3 digits",
             name = "cvv",
-            dataType = "java.lang.Integer",
+            implementation = Integer.class,
             required = true,
             example = "123")
     @NotNull(message = "is mandatory!")

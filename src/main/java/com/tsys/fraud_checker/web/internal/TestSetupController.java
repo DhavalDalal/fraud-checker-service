@@ -2,9 +2,11 @@ package com.tsys.fraud_checker.web.internal;
 
 import com.tsys.fraud_checker.services.StubbedDelayVerificationService;
 import com.tsys.fraud_checker.services.VerificationServiceRouter;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -12,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.logging.Logger;
 
 import static com.tsys.fraud_checker.services.VerificationServiceRouter.RouteTo.ACTUAL;
@@ -36,9 +37,11 @@ public class TestSetupController {
         this.verificationServiceRouter = verificationServiceRouter;
     }
 
-    @ApiOperation(value = "Am I alive?", produces = "application/json")
+    @Operation(description = "Am I alive?")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Got Health status", response = String.class),
+        @ApiResponse(responseCode = "200",
+            description = "Got Health status",
+            content = { @Content(schema = @Schema(title = "Health Status", implementation = String.class), mediaType = "application/json") })
     })
     @GetMapping(value = "ping", produces = "application/json")
     @ResponseBody
