@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "32e67473-4ec8-4443-a7e2-e69ccec890e7",
+		"_postman_id": "2d7ec05b-391d-412e-8980-c7db7a0254a9",
 		"name": "Fraud Checker Microservice",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32970462"
 	},
 	"item": [
 		{
@@ -675,7 +676,208 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "{{fraud_checker_url}}/validateHeaderParameterUsingPost",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "param",
+						"value": "5",
+						"description": "Lower Valid Value",
+						"type": "text"
+					},
+					{
+						"key": "param",
+						"value": "9999",
+						"description": "Upper Valid Value",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "param",
+						"value": "0",
+						"description": "Invalid Value",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "param",
+						"value": "10000",
+						"description": "Invalid Value",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"creditCard\": {\n    \"number\": \"4485-2847-2013-4093\",\n    \"holderName\": \"string\",\n    \"issuingBank\": \"string\",\n    \"validUntil\": \"2024-03-02T03:10:46.776Z\",\n    \"cvv\": 123\n  },\n  \"charge\": {\n    \"currency\": \"INR\",\n    \"amount\": 1234.56\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/validateHeaderParameterUsingPost",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"validateHeaderParameterUsingPost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{fraud_checker_url}}/validateHeaderParameter",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "param",
+						"value": "5",
+						"description": "Lower valid value",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "param",
+						"value": "9999",
+						"description": "Upper valid value",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "param",
+						"value": "0",
+						"description": "invalid value\n",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "param",
+						"value": "10000",
+						"description": "invalid value",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{fraud_checker_url}}/validateHeaderParameter",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"validateHeaderParameter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{fraud_checker_url}}/validateRequestParameter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{fraud_checker_url}}/validateRequestParameter?param=10000",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"validateRequestParameter"
+					],
+					"query": [
+						{
+							"key": "param",
+							"value": "5",
+							"description": "Lower valid value",
+							"disabled": true
+						},
+						{
+							"key": "param",
+							"value": "9999",
+							"description": "Upper valid value",
+							"disabled": true
+						},
+						{
+							"key": "param",
+							"value": "0",
+							"description": "invalid value",
+							"disabled": true
+						},
+						{
+							"key": "param",
+							"value": "10000",
+							"description": "invalid value"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{fraud_checker_url}}/validatePathVariable",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Invalid Path Variable Ids",
+							"// pm.collectionVariables.set(\"pathVariableId\", \"0\");",
+							"// pm.collectionVariables.set(\"pathVariableId\", \"10000\");",
+							"",
+							"// Valid Path Variable Ids",
+							"// pm.collectionVariables.set(\"pathVariableId\", \"5\");",
+							"// pm.collectionVariables.set(\"pathVariableId\", \"9999\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{fraud_checker_url}}/validatePathVariable/{{pathVariableId}}",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"validatePathVariable",
+						"{{pathVariableId}}"
+					]
+				}
+			},
+			"response": []
 		}
 	],
-	"protocolProfileBehavior": {}
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "pathVariableId",
+			"value": "5"
+		}
+	]
 }
