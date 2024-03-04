@@ -33,11 +33,25 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 }
 
+eclipse {
+    classpath {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
 test {
     useJUnitPlatform()
 }
 
-task taggedTest(type: Test) {
+tasks taggedTest(type: Test) {
     def incTags = System.getProperty("includeTags") ?
             System.getProperty("includeTags") : 'UnitTest'
     def excTags = System.getProperty("excludeTags") ?
