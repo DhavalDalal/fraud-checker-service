@@ -30,7 +30,7 @@ lead to a chargeback. Enabling a CVV filter helps merchants fight
 fraud and reduce chargebacks.
 
 ### Device Identification
-Device identification analyses the computer rather than the person
+Device identification analyses the computer/device rather than the person
 who is visiting your website. It profiles the operating system,
 internet connection and browser to gauge if the online transaction
 has to be approved, flagged or declined. All devices (phones,
@@ -69,6 +69,17 @@ As a Fraud Checker
 I want to detect the device used by the credit card user
 so that the online transaction can be marked either as pass, or suspicious or failed
 ```
+
+NOTE: In order to implement this story, you will need to get the ```User-Agent``` from the request and parse it to 
+obtain the following:
+1. Device Family
+2. OS
+3. User Agent
+
+For this purpose you may use the library: [https://github.com/ua-parser/uap-java](https://github.com/ua-parser/uap-java) 
+and to know more in detail about Device Identification and how can it be implemented, please [read](docs%2FREADME-DeviceIdentification.md)
+
+Make sure all your tests are green before checking in your code.
 
 ## Develop/Debug 
 ### To Start Dev Loop 
