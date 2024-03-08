@@ -48,11 +48,19 @@ With the advent of smartphones, a few things have changed, and many of the devic
 This has sparked the idea that client-side adaptation could ultimately make device detection unnecessary. The concept of a “one-size-fits-all” website is very romantic and seductive, thanks to the potential of JavaScript to make the device-fragmentation problem disappear. The prospect of not having to invest in a device-detection framework makes client-side adaptation appealing to CFOs also. However, we strongly believe that reality is not quite that simple.
 
 ## The Technicalities
+
+### User Agent
+
+_Excerpt from: [https://deviceatlas.com/blog/user-agent-parsing-how-it-works-and-how-it-can-be-used](https://deviceatlas.com/blog/user-agent-parsing-how-it-works-and-how-it-can-be-used)_
+A User-Agent (UA) is an alphanumeric string that identifies the ‘agent’ or program making a request to a web server for an asset such as a document, image or web page. It is a standard part of web architecture and is passed by all web requests in the HTTP headers. The User-Agent string is very useful because it tells you quite specific information about the software and hardware running on the device that is making the request. You can make important decisions on how to handle web traffic based on the User-Agent string, ranging from simple segmentation and redirection, to more complex content adaptation and device targeting decisions.
+
+Although the User-Agent doesn't identify specific individuals, it does provide developers with an extremely powerful method of analysing and segmenting traffic. This information, gleaned directly from the User-Agent string itself (a process known as User-Agent parsing) typically includes browser, web rendering engine, operating system and device. Deeper information can be returned when the User-Agent string is mapped to an additional set of data about the underlying device.
+
 _Excerpt from: [https://techlab.bol.com/en/blog/making-sense-user-agent-string/](https://techlab.bol.com/en/blog/making-sense-user-agent-string/)_
 
-When a web browser does an HTTP request to a website, one of the headers in such a request is the User-Agent header as described in RFC 2616:
+When a web browser does an HTTP request to a website, one of the headers in such a request is the User-Agent header as described in ```RFC 2616```:
 
-The User-Agent request-header field contains information about the user agent originating the request. This is for statistical purposes, the tracing of protocol violations, and automated recognition of user agents for the sake of tailoring responses to avoid particular user agent limitations.
+The ```User-Agent``` request-header field contains information about the user agent originating the request. This is for statistical purposes, the tracing of protocol violations, and automated recognition of user agents for the sake of tailoring responses to avoid particular user agent limitations.
 
 An example of a user agent is this:
 
