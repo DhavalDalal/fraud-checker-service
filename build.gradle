@@ -51,7 +51,7 @@ test {
     useJUnitPlatform()
 }
 
-tasks taggedTest(type: Test) {
+task taggedTest(type: Test) {
     def incTags = System.getProperty("includeTags") ?
             System.getProperty("includeTags") : 'UnitTest'
     def excTags = System.getProperty("excludeTags") ?
@@ -89,7 +89,7 @@ task reload(type: Copy) {
 // Usage on command line:
 // gradle bootRun -Dserver.port=10001 -DcustomArgument=custom
 bootRun {
-    systemProperties = System.properties
+    systemProperties = System.properties as Map<String, ?>
 }
 
 docker {

@@ -30,13 +30,45 @@ lead to a chargeback. Enabling a CVV filter helps merchants fight
 fraud and reduce chargebacks.
 
 ### Device Identification
-Device identification analysis the computer rather than the person
+Device identification analyses the computer rather than the person
 who is visiting your website. It profiles the operating system,
 internet connection and browser to gauge if the online transaction
 has to be approved, flagged or declined. All devices (phones,
 computers, tablets, etc) have a unique device fingerprint, similar
 to the fingerprints of people, that helps identify fraudulent
 patterns and assess risk if any.
+
+### Stories
+
+#### Past Iteration
+##### Story #1 Verify Validity of the Credit Card
+```
+As a Fraud Checker
+I want to verify the validity of the credit card
+so that I can use it to pass or fail a request for fraud check.
+```
+
+##### Story #2 Verify Credit Card CVV
+```
+As a Fraud Checker
+I want to verify CVV code 
+so that I can use it to pass or fail a request for fraud check.
+```
+
+##### Story #3 Verify Credit Card Address
+```
+As a Fraud Checker
+I want to verify credit card holder address
+so that I can use it to pass or mark suspicious a request for fraud check.
+```
+
+#### This Iteration
+##### Story #4 Implement Device Identification
+```
+As a Fraud Checker
+I want to detect the device used by the credit card user
+so that the online transaction can be marked either as pass, or suspicious or failed
+```
 
 ## Develop/Debug 
 ### To Start Dev Loop 
