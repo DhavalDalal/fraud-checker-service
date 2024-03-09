@@ -67,6 +67,33 @@ public class FraudStatus {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        FraudStatus that = (FraudStatus) o;
+
+        if (!cvvStatus.equals(that.cvvStatus))
+            return false;
+
+        if (!avStatus.equals(that.avStatus))
+            return false;
+
+        return overall.equals(that.overall);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = cvvStatus.hashCode();
+        result = 31 * result + avStatus.hashCode();
+        result = 31 * result + overall.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "FraudStatus{" +
                 "cvvStatus='" + cvvStatus + '\'' +

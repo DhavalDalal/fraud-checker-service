@@ -64,7 +64,7 @@ public class DefaultVerificationServiceValidationTest {
     private DefaultVerificationService defaultVerificationService;
 
     @Test
-    public void isValid() throws InterruptedException {
+    public void aValidCardProducesVerificationResponse() throws InterruptedException {
         given(random.nextInt(anyInt()))
                 .willReturn(-2000) // for sleepMillis
                 .willReturn(CVV_STATUS_PASS)
