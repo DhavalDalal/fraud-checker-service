@@ -6,7 +6,7 @@
 		"contact": {
 			"name": "Dhaval Dalal",
 			"url": "https://github.com/DhavalDalal/fraud-checker-service",
-			"email": "dhaval@softwareartisan"
+			"email": "dhaval@softwareartisan.com"
 		},
 		"license": {
 			"name": "Copyleft License",
@@ -259,11 +259,13 @@
 					},
 					"holderName": {
 						"type": "string",
-						"description": "Card Holder name"
+						"description": "Card Holder name",
+						"example": "TestCard Holder Name"
 					},
 					"issuingBank": {
 						"type": "string",
-						"description": "Issuing of the Card"
+						"description": "Issuing of the Card",
+						"example": "Test Bank"
 					},
 					"validUntil": {
 						"type": "string",

@@ -6,7 +6,7 @@
 		"contact": {
 			"name": "Dhaval Dalal",
 			"url": "https://github.com/DhavalDalal/fraud-checker-service",
-			"email": "dhaval@softwareartisan"
+			"email": "dhaval@softwareartisan.com"
 		},
 		"license": {
 			"name": "Copyleft License",
@@ -175,17 +175,9 @@
 				"operationId": "fraudCheckDelay",
 				"parameters": [
 					{
-						"name": "timeInMillis",
-						"in": "query",
-						"description": "An integer value, 0 is permissible for no delay",
-						"schema": {
-							"type": "integer",
-							"format": "int32"
-						}
-					},
-					{
 						"name": "respondIn",
 						"in": "query",
+						"description": "An integer value, 0 is permissible for no delay",
 						"required": true,
 						"schema": {
 							"type": "integer",
@@ -252,11 +244,13 @@
 					},
 					"holderName": {
 						"type": "string",
-						"description": "Card Holder name"
+						"description": "Card Holder name",
+						"example": "TestCard Holder Name"
 					},
 					"issuingBank": {
 						"type": "string",
-						"description": "Issuing of the Card"
+						"description": "Issuing of the Card",
+						"example": "Test Bank"
 					},
 					"validUntil": {
 						"type": "string",
@@ -298,16 +292,27 @@
 				}
 			},
 			"FraudStatus": {
+				"required": [
+					"avStatus",
+					"cvvStatus",
+					"overall"
+				],
 				"type": "object",
 				"properties": {
 					"cvvStatus": {
-						"type": "string"
+						"type": "string",
+						"description": "CVV Status the Card - pass or fail",
+						"example": "pass"
 					},
 					"avStatus": {
-						"type": "string"
+						"type": "string",
+						"description": "Address Verification Status the Card - pass or incorrect address",
+						"example": "pass"
 					},
 					"overall": {
-						"type": "string"
+						"type": "string",
+						"description": "Overall Fraud Status - pass or fail or suspicious",
+						"example": "pass"
 					}
 				}
 			},
@@ -334,10 +339,10 @@
 			"StubProvider": {
 				"type": "object",
 				"properties": {
-					"request": {
+					"response": {
 						"type": "object"
 					},
-					"response": {
+					"request": {
 						"type": "object"
 					}
 				}

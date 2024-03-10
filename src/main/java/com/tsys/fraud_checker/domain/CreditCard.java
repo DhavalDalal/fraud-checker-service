@@ -30,7 +30,8 @@ public class CreditCard {
         description = "Card Holder name",
         name = "holderName",
         implementation = String.class,
-        required = true)
+        required = true,
+        example = "TestCard Holder Name")
     @NotBlank(message = "is required")
     public final String holderName;
 
@@ -38,7 +39,8 @@ public class CreditCard {
         description = "Issuing of the Card",
         name = "issuingBank",
         implementation = String.class,
-        required = true)
+        required = true,
+        example = "Test Bank")
     @NotBlank(message = "Issuing Bank name is required")
     public final String issuingBank;
 

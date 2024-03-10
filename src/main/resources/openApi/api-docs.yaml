@@ -5,7 +5,7 @@ info:
   contact:
     name: Dhaval Dalal
     url: https://github.com/DhavalDalal/fraud-checker-service
-    email: dhaval@softwareartisan
+    email: dhaval@softwareartisan.com
   license:
     name: Copyleft License
     url: https://www.gnu.org/licenses/gpl-3.0.html
@@ -261,14 +261,9 @@ paths:
         a fraud check request
       operationId: fraudCheckDelay
       parameters:
-      - name: timeInMillis
-        in: query
-        description: "An integer value, 0 is permissible for no delay"
-        schema:
-          type: integer
-          format: int32
       - name: respondIn
         in: query
+        description: "An integer value, 0 is permissible for no delay"
         required: true
         schema:
           type: integer
@@ -340,9 +335,11 @@ components:
         holderName:
           type: string
           description: Card Holder name
+          example: TestCard Holder Name
         issuingBank:
           type: string
           description: Issuing of the Card
+          example: Test Bank
         validUntil:
           type: string
           description: Expiry Date of the Card
@@ -385,20 +382,30 @@ components:
         response:
           $ref: '#/components/schemas/FraudStatus'
     FraudStatus:
+      required:
+      - avStatus
+      - cvvStatus
+      - overall
       type: object
       properties:
         cvvStatus:
           type: string
+          description: CVV Status the Card - pass or fail
+          example: pass
         avStatus:
           type: string
+          description: Address Verification Status the Card - pass or incorrect address
+          example: pass
         overall:
           type: string
+          description: Overall Fraud Status - pass or fail or suspicious
+          example: pass
     StubProvider:
       type: object
       properties:
-        request:
-          type: object
         response:
+          type: object
+        request:
           type: object
     Stubs:
       type: object

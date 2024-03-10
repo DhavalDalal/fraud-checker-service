@@ -79,7 +79,7 @@ public class TestSetupController {
     // url for setting up stubbed delay
     @Operation(description = "Setup delay time in millis for the response to be sent back for a fraud check request",
         parameters = {
-            @Parameter(name = "timeInMillis", schema = @Schema(implementation = Integer.class), description = "An integer value, 0 is permissible for no delay")
+            @Parameter(name = "respondIn", schema = @Schema(implementation = Integer.class), description = "An integer value, 0 is permissible for no delay")
         }
     )
     @GetMapping("/fraudCheckDelay")

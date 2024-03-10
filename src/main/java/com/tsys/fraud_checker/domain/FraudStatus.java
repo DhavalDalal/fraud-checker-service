@@ -37,6 +37,8 @@ package com.tsys.fraud_checker.domain;
 // to the fingerprints of people, that helps identify fraudulent
 // patterns and assess risk if any.
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class FraudStatus {
 
     public static final String PASS = "pass";
@@ -44,8 +46,26 @@ public class FraudStatus {
     public static final String SUSPICIOUS = "suspicious";
 
     public static final String ADDRESS_VERIFICATION_IA = "incorrect address";
+
+    @Schema(
+        description = "CVV Status the Card - pass or fail",
+        implementation = String.class,
+        required = true,
+        example = "pass")
     public final String cvvStatus;
+
+    @Schema(
+        description = "Address Verification Status the Card - pass or incorrect address",
+        implementation = String.class,
+        required = true,
+        example = "pass")
     public final String avStatus;
+
+    @Schema(
+        description = "Overall Fraud Status - pass or fail or suspicious",
+        implementation = String.class,
+        required = true,
+        example = "pass")
     public final String overall;
     private String[] cvvStatuses = new String[]{PASS, FAIL};
     private String[] avStatuses = new String[]{PASS, ADDRESS_VERIFICATION_IA};
