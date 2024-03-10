@@ -37,7 +37,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 // NOTE: No Web-Server is deployed
 @WebMvcTest(FraudCheckerController.class)
 @Tag("UnitTest")
-public class FraudCheckerControllerUnitWebMvcTest {
+public class FraudCheckerControllerWebMvcTest {
 
     @MockBean
     private DefaultVerificationService verificationService;
