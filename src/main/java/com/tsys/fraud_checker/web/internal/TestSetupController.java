@@ -22,7 +22,7 @@ import static com.tsys.fraud_checker.services.VerificationServiceRouter.RouteTo.
 import static com.tsys.fraud_checker.services.VerificationServiceRouter.RouteTo.STUB;
 
 @Profile("development")
-//@Tag(name = "Test Setup Controller", description = "Sets up Routing to Real or Stubbed Service for Fraud Checking with various parameters")
+@Tag(name = "Test Setup Controller", description = "Sets up Routing to Real or Stubbed Service for Fraud Checking with various parameters")
 @Controller
 @RequestMapping("/setup")
 public class TestSetupController {
