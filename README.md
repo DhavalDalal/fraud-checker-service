@@ -173,8 +173,19 @@ NOTE: If you don't have an account on Docker Hub, please create one by visiting 
 1. Using Springfox, navigate to [http://localhost:9001/swagger-ui/index.html](http://localhost:9001/swagger-ui/index.html) and click on [http://localhost:9001/api-docs](http://localhost:9001/api-docs) to get the JSON version of the API docs 
 2. In order to generate the YAML version, go to [https://editor.swagger.io](https://editor.swagger.io) and paste the above JSON file.  Go to Edit | Convert to YAML and save the file in YAML format.
 3. Go to [https://platform.42crunch.com](https://platform.42crunch.com) and sign-up/sign-in
-4. Click Settings | Api Tokens | Create New Token - <<your token>>
-5.  
+4. Get your IDE specific 42 Crunch plugin from [https://docs.42crunch.com/latest/content/tasks/integrate_ide_with_platform.htm](https://docs.42crunch.com/latest/content/tasks/integrate_ide_with_platform.htm)
+5. Click Settings | Api Tokens | Create New Token - <<your token>> 
+6. Paste this token in your IDE 42 crunch Plugin for your project 
+7. Alternatively, just download the plugin and register with 42-crunch from your Plugin and get the 42-Crunch token for your IDE  
+
+## Running
+### Running Application using Idea
+1. Go to FraudCheckerApplication and Run
+2. In order to run a specific profile, choose Edit Configurations...
+3. Say we want to run development profile, then under Environment variables, add ```spring.profiles.active=development```
+
+### Running Application using CommandLine
+```$> java -jar -Dspring.profiles.active=development fraud-checker-service.jar```
 
 ### Reference Documentation
 For further reference, please consider the following sections:

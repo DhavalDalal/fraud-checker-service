@@ -27,11 +27,17 @@
 			]
 		}
 	],
+	"tags": [
+		{
+			"name": "Test Setup Controller",
+			"description": "Sets up Routing to Real or Stubbed Service for Fraud Checking with various parameters"
+		}
+	],
 	"paths": {
 		"/setup/stubFor/check": {
 			"post": {
 				"tags": [
-					"test-setup-controller"
+					"Test Setup Controller"
 				],
 				"description": "Stub Fraud Check payload request and its corresponding Fraud Status response.",
 				"operationId": "stub",
@@ -72,7 +78,7 @@
 		"/setup/stubbingFor/check": {
 			"get": {
 				"tags": [
-					"test-setup-controller"
+					"Test Setup Controller"
 				],
 				"description": "Switch the routing of request to Stub or Real Service",
 				"operationId": "turnStubbingForFraudCheck",
@@ -107,7 +113,7 @@
 		"/setup/ping": {
 			"get": {
 				"tags": [
-					"test-setup-controller"
+					"Test Setup Controller"
 				],
 				"description": "Am I alive?",
 				"operationId": "pong",
@@ -138,7 +144,7 @@
 		"/setup/getStubs": {
 			"get": {
 				"tags": [
-					"test-setup-controller"
+					"Test Setup Controller"
 				],
 				"description": "Get All the set stubs",
 				"operationId": "stubs",
@@ -169,7 +175,7 @@
 		"/setup/fraudCheckDelay": {
 			"get": {
 				"tags": [
-					"test-setup-controller"
+					"Test Setup Controller"
 				],
 				"description": "Setup delay time in millis for the response to be sent back for a fraud check request",
 				"operationId": "fraudCheckDelay",
@@ -180,6 +186,8 @@
 						"description": "An integer value, 0 is permissible for no delay",
 						"required": true,
 						"schema": {
+							"maximum": 99999,
+							"minimum": 0,
 							"type": "integer",
 							"format": "int32"
 						}
@@ -238,6 +246,8 @@
 				"type": "object",
 				"properties": {
 					"number": {
+						"maxLength": 19,
+						"minLength": 16,
 						"type": "string",
 						"description": "Card Number - Must be between 16 and 19 digits.  It can contain non-digit characters like SPACE or a dash '-'",
 						"example": "4485-2847-2013-4093"
@@ -258,6 +268,8 @@
 						"format": "date-time"
 					},
 					"cvv": {
+						"maxLength": 3,
+						"minLength": 3,
 						"type": "integer",
 						"description": "Card Verification Value - Must be 3 digits",
 						"format": "int32",
@@ -300,19 +312,22 @@
 				"type": "object",
 				"properties": {
 					"cvvStatus": {
+						"pattern": "pass|fail",
 						"type": "string",
 						"description": "CVV Status the Card - pass or fail",
 						"example": "pass"
 					},
 					"avStatus": {
+						"pattern": "pass|incorrect address",
 						"type": "string",
 						"description": "Address Verification Status the Card - pass or incorrect address",
-						"example": "pass"
+						"example": "incorrect address"
 					},
 					"overall": {
+						"pattern": "pass|fail|suspicious",
 						"type": "string",
 						"description": "Overall Fraud Status - pass or fail or suspicious",
-						"example": "pass"
+						"example": "suspicious"
 					}
 				}
 			},

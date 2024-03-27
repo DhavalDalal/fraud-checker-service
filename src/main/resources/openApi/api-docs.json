@@ -1,3 +1,6 @@
+// 20240311192743
+// http://localhost:9001/api-docs
+
 {
 	"openapi": "3.0.1",
 	"info": {
@@ -31,6 +34,10 @@
 		{
 			"name": "Fraud Check Controller",
 			"description": "Checks for Credit Card Frauds using CVV and Address Check."
+		},
+		{
+			"name": "Test Setup Controller",
+			"description": "Sets up Routing to Real or Stubbed Service for Fraud Checking with various parameters"
 		}
 	],
 	"paths": {
@@ -66,21 +73,64 @@
 					"required": true
 				},
 				"responses": {
+					"200": {
+						"description": "Validated Request Parameter Using Post",
+						"content": {
+							"text/plain": {
+
+							}
+						}
+					},
 					"400": {
 						"description": "Bad Request",
 						"content": {
-							"*/*": {
+							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ValidationErrorsResponse"
 								}
 							}
 						}
 					},
-					"default": {
-						"description": "default response",
+					"401": {
+						"description": "Unauthorized",
 						"content": {
-							"text/plain": {
-
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Not Acceptable",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests"
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
 							}
 						}
 					}
@@ -90,7 +140,7 @@
 		"/setup/stubFor/check": {
 			"post": {
 				"tags": [
-					"test-setup-controller"
+					"Test Setup Controller"
 				],
 				"description": "Stub Fraud Check payload request and its corresponding Fraud Status response.",
 				"operationId": "stub",
@@ -121,6 +171,49 @@
 							"*/*": {
 								"schema": {
 									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Not Acceptable",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests"
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
 								}
 							}
 						}
@@ -159,12 +252,45 @@
 					"400": {
 						"description": "Bad Request",
 						"content": {
-							"*/*": {
+							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ValidationErrorsResponse"
 								}
 							}
 						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Not Acceptable",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests"
 					},
 					"500": {
 						"description": "Internal Server Error",
@@ -172,6 +298,16 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/FraudStatus"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
 								}
 							}
 						}
@@ -201,21 +337,74 @@
 					}
 				],
 				"responses": {
+					"200": {
+						"description": "Validated Request Parameter",
+						"content": {
+							"text/plain": {
+
+							}
+						}
+					},
 					"400": {
 						"description": "Bad Request",
 						"content": {
-							"*/*": {
+							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ValidationErrorsResponse"
 								}
 							}
 						}
 					},
-					"default": {
-						"description": "default response",
+					"401": {
+						"description": "Unauthorized",
 						"content": {
-							"text/plain": {
-
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found!",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Not Acceptable",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests"
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
 							}
 						}
 					}
@@ -245,21 +434,74 @@
 					}
 				],
 				"responses": {
+					"200": {
+						"description": "Validated Path Variable",
+						"content": {
+							"text/plain": {
+
+							}
+						}
+					},
 					"400": {
 						"description": "Bad Request",
 						"content": {
-							"*/*": {
+							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ValidationErrorsResponse"
 								}
 							}
 						}
 					},
-					"default": {
-						"description": "default response",
+					"401": {
+						"description": "Unauthorized",
 						"content": {
-							"text/plain": {
-
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found!",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Not Acceptable",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests"
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
 							}
 						}
 					}
@@ -288,21 +530,74 @@
 					}
 				],
 				"responses": {
+					"200": {
+						"description": "Validated Header Parameter",
+						"content": {
+							"text/plain": {
+
+							}
+						}
+					},
 					"400": {
 						"description": "Bad Request",
 						"content": {
-							"*/*": {
+							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ValidationErrorsResponse"
 								}
 							}
 						}
 					},
-					"default": {
-						"description": "default response",
+					"401": {
+						"description": "Unauthorized",
 						"content": {
-							"text/plain": {
-
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found!",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Not Acceptable",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests"
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
 							}
 						}
 					}
@@ -312,7 +607,7 @@
 		"/setup/stubbingFor/check": {
 			"get": {
 				"tags": [
-					"test-setup-controller"
+					"Test Setup Controller"
 				],
 				"description": "Switch the routing of request to Stub or Real Service",
 				"operationId": "turnStubbingForFraudCheck",
@@ -340,6 +635,59 @@
 								}
 							}
 						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found!",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Not Acceptable",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests"
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
 					}
 				}
 			}
@@ -347,7 +695,7 @@
 		"/setup/ping": {
 			"get": {
 				"tags": [
-					"test-setup-controller"
+					"Test Setup Controller"
 				],
 				"description": "Am I alive?",
 				"operationId": "pong",
@@ -371,6 +719,59 @@
 								}
 							}
 						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found!",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Not Acceptable",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests"
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
 					}
 				}
 			}
@@ -378,7 +779,7 @@
 		"/setup/getStubs": {
 			"get": {
 				"tags": [
-					"test-setup-controller"
+					"Test Setup Controller"
 				],
 				"description": "Get All the set stubs",
 				"operationId": "stubs",
@@ -402,6 +803,59 @@
 								}
 							}
 						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found!",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Not Acceptable",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests"
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
 					}
 				}
 			}
@@ -409,7 +863,7 @@
 		"/setup/fraudCheckDelay": {
 			"get": {
 				"tags": [
-					"test-setup-controller"
+					"Test Setup Controller"
 				],
 				"description": "Setup delay time in millis for the response to be sent back for a fraud check request",
 				"operationId": "fraudCheckDelay",
@@ -420,6 +874,8 @@
 						"description": "An integer value, 0 is permissible for no delay",
 						"required": true,
 						"schema": {
+							"maximum": 99999,
+							"minimum": 0,
 							"type": "integer",
 							"format": "int32"
 						}
@@ -435,6 +891,59 @@
 							"*/*": {
 								"schema": {
 									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found!",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Not Acceptable",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests"
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
 								}
 							}
 						}
@@ -470,12 +979,55 @@
 							}
 						}
 					},
-					"429": {
-						"description": "Too Many Requests",
+					"401": {
+						"description": "Unauthorized",
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "string"
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found!",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Not Acceptable",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Too Many Requests"
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
 								}
 							}
 						}
@@ -495,7 +1047,8 @@
 					"message": {
 						"type": "string"
 					}
-				}
+				},
+				"additionalProperties": false
 			},
 			"ValidationErrorsResponse": {
 				"type": "object",
@@ -506,7 +1059,8 @@
 							"$ref": "#/components/schemas/ValidationError"
 						}
 					}
-				}
+				},
+				"additionalProperties": false
 			},
 			"CreditCard": {
 				"required": [
@@ -519,6 +1073,8 @@
 				"type": "object",
 				"properties": {
 					"number": {
+						"maxLength": 19,
+						"minLength": 16,
 						"type": "string",
 						"description": "Card Number - Must be between 16 and 19 digits.  It can contain non-digit characters like SPACE or a dash '-'",
 						"example": "4485-2847-2013-4093"
@@ -539,12 +1095,15 @@
 						"format": "date-time"
 					},
 					"cvv": {
+						"maxLength": 3,
+						"minLength": 3,
 						"type": "integer",
 						"description": "Card Verification Value - Must be 3 digits",
 						"format": "int32",
 						"example": 123
 					}
-				}
+				},
+				"additionalProperties": false
 			},
 			"FraudCheckPayload": {
 				"required": [
@@ -559,7 +1118,8 @@
 					"charge": {
 						"$ref": "#/components/schemas/Money"
 					}
-				}
+				},
+				"additionalProperties": false
 			},
 			"Money": {
 				"required": [
@@ -579,7 +1139,8 @@
 						"format": "double",
 						"example": 1234.56
 					}
-				}
+				},
+				"additionalProperties": false
 			},
 			"FraudCheckStub": {
 				"type": "object",
@@ -590,7 +1151,8 @@
 					"response": {
 						"$ref": "#/components/schemas/FraudStatus"
 					}
-				}
+				},
+				"additionalProperties": false
 			},
 			"FraudStatus": {
 				"required": [
@@ -601,32 +1163,37 @@
 				"type": "object",
 				"properties": {
 					"cvvStatus": {
+						"pattern": "pass|fail",
 						"type": "string",
 						"description": "CVV Status the Card - pass or fail",
 						"example": "pass"
 					},
 					"avStatus": {
+						"pattern": "pass|incorrect address",
 						"type": "string",
 						"description": "Address Verification Status the Card - pass or incorrect address",
-						"example": "pass"
+						"example": "incorrect address"
 					},
 					"overall": {
+						"pattern": "pass|fail|suspicious",
 						"type": "string",
 						"description": "Overall Fraud Status - pass or fail or suspicious",
-						"example": "pass"
+						"example": "suspicious"
 					}
-				}
+				},
+				"additionalProperties": false
 			},
 			"StubProvider": {
 				"type": "object",
 				"properties": {
-					"response": {
-						"type": "object"
-					},
 					"request": {
 						"type": "object"
+					},
+					"response": {
+						"type": "object"
 					}
-				}
+				},
+				"additionalProperties": false
 			},
 			"Stubs": {
 				"type": "object",
@@ -637,7 +1204,8 @@
 							"$ref": "#/components/schemas/StubProvider"
 						}
 					}
-				}
+				},
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {

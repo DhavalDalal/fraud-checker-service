@@ -25,6 +25,9 @@
 		},
 		{
 			"name": "Fraud Checker - Check",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
 			"request": {
 				"method": "POST",
 				"header": [
@@ -36,7 +39,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485 2847 2013 4093\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485 2847 2013 4093\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2025-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"

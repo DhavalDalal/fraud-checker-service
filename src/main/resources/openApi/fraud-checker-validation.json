@@ -66,21 +66,21 @@
 					"required": true
 				},
 				"responses": {
-					"400": {
-						"description": "Bad Request",
-						"content": {
-							"*/*": {
-								"schema": {
-									"$ref": "#/components/schemas/ValidationErrorsResponse"
-								}
-							}
-						}
-					},
-					"default": {
-						"description": "default response",
+					"200": {
+						"description": "Validated Request Parameter Using Post",
 						"content": {
 							"text/plain": {
 
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
 							}
 						}
 					}
@@ -109,21 +109,21 @@
 					}
 				],
 				"responses": {
-					"400": {
-						"description": "Bad Request",
-						"content": {
-							"*/*": {
-								"schema": {
-									"$ref": "#/components/schemas/ValidationErrorsResponse"
-								}
-							}
-						}
-					},
-					"default": {
-						"description": "default response",
+					"200": {
+						"description": "Validated Request Parameter",
 						"content": {
 							"text/plain": {
 
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
 							}
 						}
 					}
@@ -153,21 +153,21 @@
 					}
 				],
 				"responses": {
-					"400": {
-						"description": "Bad Request",
-						"content": {
-							"*/*": {
-								"schema": {
-									"$ref": "#/components/schemas/ValidationErrorsResponse"
-								}
-							}
-						}
-					},
-					"default": {
-						"description": "default response",
+					"200": {
+						"description": "Validated Path Variable",
 						"content": {
 							"text/plain": {
 
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
 							}
 						}
 					}
@@ -196,21 +196,21 @@
 					}
 				],
 				"responses": {
-					"400": {
-						"description": "Bad Request",
-						"content": {
-							"*/*": {
-								"schema": {
-									"$ref": "#/components/schemas/ValidationErrorsResponse"
-								}
-							}
-						}
-					},
-					"default": {
-						"description": "default response",
+					"200": {
+						"description": "Validated Header Parameter",
 						"content": {
 							"text/plain": {
 
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidationErrorsResponse"
+								}
 							}
 						}
 					}
@@ -253,6 +253,8 @@
 				"type": "object",
 				"properties": {
 					"number": {
+						"maxLength": 19,
+						"minLength": 16,
 						"type": "string",
 						"description": "Card Number - Must be between 16 and 19 digits.  It can contain non-digit characters like SPACE or a dash '-'",
 						"example": "4485-2847-2013-4093"
@@ -273,6 +275,8 @@
 						"format": "date-time"
 					},
 					"cvv": {
+						"maxLength": 3,
+						"minLength": 3,
 						"type": "integer",
 						"description": "Card Verification Value - Must be 3 digits",
 						"format": "int32",

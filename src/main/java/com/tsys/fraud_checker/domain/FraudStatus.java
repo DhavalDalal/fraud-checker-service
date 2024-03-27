@@ -50,6 +50,7 @@ public class FraudStatus {
     @Schema(
         description = "CVV Status the Card - pass or fail",
         implementation = String.class,
+        pattern = "pass|fail",
         required = true,
         example = "pass")
     public final String cvvStatus;
@@ -57,15 +58,17 @@ public class FraudStatus {
     @Schema(
         description = "Address Verification Status the Card - pass or incorrect address",
         implementation = String.class,
+        pattern = "pass|incorrect address",
         required = true,
-        example = "pass")
+        example = "incorrect address")
     public final String avStatus;
 
     @Schema(
         description = "Overall Fraud Status - pass or fail or suspicious",
         implementation = String.class,
+        pattern = "pass|fail|suspicious",
         required = true,
-        example = "pass")
+        example = "suspicious")
     public final String overall;
     private String[] cvvStatuses = new String[]{PASS, FAIL};
     private String[] avStatuses = new String[]{PASS, ADDRESS_VERIFICATION_IA};

@@ -2,14 +2,22 @@ package com.tsys.fraud_checker.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Configuration
 public class SwaggerConfiguration {
@@ -91,6 +99,83 @@ public class SwaggerConfiguration {
                     .scheme("bearer")
                     .bearerFormat("JWT"))
         );
+  }
+
+  @Bean
+  public OpenApiCustomizer openApiAdditionalPropertiesCustomiser() {
+    return openApi -> {
+      openApi
+          .getComponents()
+          .getSchemas()
+          .values()
+          .forEach(schema -> {
+            schema.setAdditionalProperties(false);
+            // Set Default Response
+//            schema.set();
+          });
+
+      openApi
+          .getPaths()
+          .values().stream()
+          .flatMap(pathItem -> pathItem.readOperations().stream())
+          .forEach(operation -> {
+            operation.getResponses().put("429", new ApiResponse() {{
+              setDescription("Too Many Requests");
+            }});
+            operation.getResponses().put("401", new ApiResponse() {{
+              setDescription("Unauthorized");
+              setContent(new Content().addMediaType("application/json", new MediaType()
+                  .schema(new Schema().$ref("#/components/schemas/Error"))));
+
+            }});
+            operation.getResponses().put("403", new ApiResponse() {{
+              setDescription("Forbidden");
+              setContent(new Content().addMediaType("application/json", new MediaType()
+                  .schema(new Schema().$ref("#/components/schemas/Error"))));
+            }});
+            operation.getResponses().put("default", new ApiResponse() {{
+              setDescription("unexpected error");
+              setContent(new Content().addMediaType("application/json", new MediaType()
+                  .schema(new Schema().$ref("#/components/schemas/Error"))));
+            }});
+          });
+
+      final var _404HttpMethods = List.of(PathItem.HttpMethod.GET, PathItem.HttpMethod.PUT, PathItem.HttpMethod.HEAD, PathItem.HttpMethod.DELETE);
+      openApi
+          .getPaths()
+          .values().stream()
+          .flatMap(pathItem -> pathItem.readOperationsMap().entrySet().stream().filter(entry -> {
+                var httpMethod = entry.getKey();
+                return _404HttpMethods.stream().anyMatch(_404httpMethod -> _404httpMethod == httpMethod);
+              })
+              .map(entry -> entry.getValue()))
+          .forEach(operation -> {
+            operation.getResponses().put("404", new ApiResponse() {{
+              setDescription("Not Found!");
+              setContent(new Content().addMediaType("application/json", new MediaType()
+                  .schema(new Schema().$ref("#/components/schemas/Error"))));
+
+            }});
+          });
+
+      final var _406HttpMethods = List.of(PathItem.HttpMethod.GET, PathItem.HttpMethod.POST, PathItem.HttpMethod.PUT, PathItem.HttpMethod.PATCH);
+      openApi
+          .getPaths()
+          .values().stream()
+          .flatMap(pathItem -> pathItem.readOperationsMap().entrySet().stream().filter(entry -> {
+                var httpMethod = entry.getKey();
+                return _406HttpMethods.stream().anyMatch(_406httpMethod -> _406httpMethod == httpMethod);
+              })
+              .map(entry -> entry.getValue()))
+          .forEach(operation ->
+              operation.getResponses().put("406", new ApiResponse() {{
+                setDescription("Not Acceptable");
+                setContent(new Content().addMediaType("application/json", new MediaType()
+                    .schema(new Schema().$ref("#/components/schemas/Error"))));
+              }})
+          );
+
+    };
   }
 
   private Info info() {

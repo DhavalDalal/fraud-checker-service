@@ -19,6 +19,8 @@ public class CreditCard {
             name = "number",
             implementation = String.class,
             required = true,
+            minLength = 16,
+            maxLength = 19,
             example = "4485-2847-2013-4093")
     @NotBlank(message = "Card number is required")
     @Length(min = 16, max = 19)
@@ -59,6 +61,8 @@ public class CreditCard {
             name = "cvv",
             implementation = Integer.class,
             required = true,
+            minLength = 3,
+            maxLength = 3,
             example = "123")
     @NotNull(message = "is mandatory!")
     @NumberOfDigits(value = 3, message = "must have 3 digits")

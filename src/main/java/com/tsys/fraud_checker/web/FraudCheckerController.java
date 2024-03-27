@@ -3,6 +3,7 @@ package com.tsys.fraud_checker.web;
 import com.tsys.fraud_checker.domain.FraudStatus;
 import com.tsys.fraud_checker.services.VerificationService;
 
+import com.tsys.fraud_checker.web.advices.ValidationErrorsResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -80,8 +81,14 @@ public class FraudCheckerController {
 
     @Operation(summary = "Am I alive?")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Got Health status", content = { @Content(schema = @Schema(title = "Health Status", implementation = String.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "429", description = "Too Many Requests")
+        @ApiResponse(responseCode = "200", description = "Got Health status", content = {
+            @Content(schema = @Schema(title = "Health Status",
+                implementation = String.class,
+                minLength = 10,
+                maxLength = 100,
+                pattern = "^[a-zA-Z0-9_ ]*$"),
+                mediaType = "application/json")
+        })
     })
     @GetMapping(value = "ping", produces = "application/json")
     @ResponseBody
@@ -90,7 +97,12 @@ public class FraudCheckerController {
     }
 
     @Operation(summary = "Validate Path Variable")
-    @ApiResponse(content = { @Content(mediaType = "text/plain") })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Validated Path Variable", content = { @Content(mediaType = "text/plain") }),
+        @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+            @Content(schema = @Schema(implementation = ValidationErrorsResponse.class), mediaType = "application/json")
+        })
+    })
     // The @Parameter annotation is for the parameters of an API resource request,
     //  whereas @Schema is for properties of the model.
     @GetMapping("validatePathVariable/{id}")
@@ -113,7 +125,12 @@ public class FraudCheckerController {
             @Parameter(name = "param", schema = @Schema(implementation = Integer.class), description = "Value must be between 5 and 9999 (inclusive)")
         }
     )
-    @ApiResponse(content = { @Content(mediaType = "text/plain") })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Validated Request Parameter", content = { @Content(mediaType = "text/plain") }),
+        @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+            @Content(schema = @Schema(implementation = ValidationErrorsResponse.class), mediaType = "application/json")
+        })
+    })
     @GetMapping("validateRequestParameter")
     ResponseEntity<String> validateRequestParameter(
             @RequestParam("param")
@@ -129,7 +146,12 @@ public class FraudCheckerController {
                description = "Value must be between 5 and 9999 (inclusive)")
         }
     )
-    @ApiResponse(content = { @Content(mediaType = "text/plain") })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Validated Header Parameter", content = { @Content(mediaType = "text/plain") }),
+        @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+            @Content(schema = @Schema(implementation = ValidationErrorsResponse.class), mediaType = "application/json")
+        })
+    })
     @GetMapping("validateHeaderParameter")
     ResponseEntity<String> validateHeaderParameter(
             @RequestHeader("param")
@@ -148,7 +170,12 @@ public class FraudCheckerController {
             }
         )
     )
-    @ApiResponse(content = { @Content(mediaType = "text/plain") })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Validated Request Parameter Using Post", content = { @Content(mediaType = "text/plain") }),
+        @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+            @Content(schema = @Schema(implementation = ValidationErrorsResponse.class), mediaType = "application/json")
+        })
+    })
     @PostMapping("validateHeaderParameterUsingPost")
     ResponseEntity<String> validateHeaderParameterUsingPost(
             @RequestHeader(value = "param")
@@ -186,8 +213,11 @@ public class FraudCheckerController {
                         @Content(schema = @Schema(implementation = FraudCheckPayload.class),
                             mediaType = "application/json") }))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Got Fraud Status for the check", content = { @Content(schema = @Schema(title = "Fraud Status", implementation = FraudStatus.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        @ApiResponse(responseCode = "200", description = "Got Fraud Status for the check", content = { @Content(schema = @Schema(title = "Fraud Status", implementation = FraudStatus.class), mediaType = "application/json") }),
+        @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+            @Content(schema = @Schema(implementation = ValidationErrorsResponse.class), mediaType = "application/json")
+        }),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @PostMapping(value = "check", consumes = "application/json", produces = "application/json")
     public ResponseEntity<FraudStatus> checkFraud(

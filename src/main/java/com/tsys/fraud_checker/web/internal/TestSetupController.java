@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -42,9 +44,14 @@ public class TestSetupController {
 
     @Operation(description = "Am I alive?")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200",
-            description = "Got Health status",
-            content = { @Content(schema = @Schema(title = "Health Status", implementation = String.class), mediaType = "application/json") })
+        @ApiResponse(responseCode = "200", description = "Got Health status", content = {
+            @Content(schema = @Schema(title = "Health Status",
+                implementation = String.class,
+                minLength = 10,
+                maxLength = 100,
+                pattern = "^[a-zA-Z0-9_ ]*$"),
+                mediaType = "application/json")
+        })
     })
     @GetMapping(value = "/ping", produces = "application/json")
     @ResponseBody
@@ -83,7 +90,10 @@ public class TestSetupController {
         }
     )
     @GetMapping("/fraudCheckDelay")
-    public ResponseEntity<Void> fraudCheckDelay(@RequestParam("respondIn") int timeInMillis) {
+    public ResponseEntity<Void> fraudCheckDelay(@RequestParam("respondIn")
+                                                @Min(value = 0, message = "For No delay")
+                                                @Max(value = 99999)
+                                                int timeInMillis) {
         LOG.info(() -> String.format("Setting Delay to respond from VerificationService for %d", timeInMillis));
         stubbedDelayVerificationService.setDelay(timeInMillis);
         return new ResponseEntity<>(HttpStatus.OK);

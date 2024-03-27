@@ -45,39 +45,39 @@ paths:
         "400":
           description: Bad Request
           content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ValidationErrorsResponse'
-        default:
-          description: default response
-          content:
-            text/plain: {}
-  /setup/stubFor/check:
-    post:
-      tags:
-      - test-setup-controller
-      description: Stub Fraud Check payload request and its corresponding Fraud Status
-        response.
-      operationId: stub
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FraudCheckStub'
-        required: true
-      responses:
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ValidationErrorsResponse'
         "200":
-          description: OK
+          description: Validated Request Parameter Using Post
           content:
-            '*/*':
+            text/plain: {}
+        "429":
+          description: Too Many Requests
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/Error'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "406":
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /check:
     post:
       tags:
@@ -95,7 +95,7 @@ paths:
         "400":
           description: Bad Request
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ValidationErrorsResponse'
         "500":
@@ -110,6 +110,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FraudStatus'
+        "429":
+          description: Too Many Requests
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "406":
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /validateRequestParameter:
     get:
       tags:
@@ -130,13 +156,45 @@ paths:
         "400":
           description: Bad Request
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ValidationErrorsResponse'
-        default:
-          description: default response
+        "200":
+          description: Validated Request Parameter
           content:
             text/plain: {}
+        "429":
+          description: Too Many Requests
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: Not Found!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "406":
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /validatePathVariable/{id}:
     get:
       tags:
@@ -158,13 +216,45 @@ paths:
         "400":
           description: Bad Request
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ValidationErrorsResponse'
-        default:
-          description: default response
+        "200":
+          description: Validated Path Variable
           content:
             text/plain: {}
+        "429":
+          description: Too Many Requests
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: Not Found!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "406":
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /validateHeaderParameter:
     get:
       tags:
@@ -185,104 +275,51 @@ paths:
         "400":
           description: Bad Request
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ValidationErrorsResponse'
-        default:
-          description: default response
+        "200":
+          description: Validated Header Parameter
           content:
             text/plain: {}
-  /setup/stubbingFor/check:
-    get:
-      tags:
-      - test-setup-controller
-      description: Switch the routing of request to Stub or Real Service
-      operationId: turnStubbingForFraudCheck
-      parameters:
-      - name: "on"
-        in: query
-        description: "true for routing requests to stub, false to route request to\
-          \ real service."
-        required: true
-        schema:
-          type: boolean
-      responses:
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ValidationErrorsResponse'
-        "200":
-          description: OK
-  /setup/ping:
-    get:
-      tags:
-      - test-setup-controller
-      description: Am I alive?
-      operationId: pong
-      responses:
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ValidationErrorsResponse'
-        "200":
-          description: Got Health status
+        "429":
+          description: Too Many Requests
+        "401":
+          description: Unauthorized
           content:
             application/json:
               schema:
-                type: string
-  /setup/getStubs:
-    get:
-      tags:
-      - test-setup-controller
-      description: Get All the set stubs
-      operationId: stubs
-      responses:
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ValidationErrorsResponse'
-        "200":
-          description: OK
+                $ref: '#/components/schemas/Error'
+        "403":
+          description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Stubs'
-  /setup/fraudCheckDelay:
-    get:
-      tags:
-      - test-setup-controller
-      description: Setup delay time in millis for the response to be sent back for
-        a fraud check request
-      operationId: fraudCheckDelay
-      parameters:
-      - name: respondIn
-        in: query
-        description: "An integer value, 0 is permissible for no delay"
-        required: true
-        schema:
-          type: integer
-          format: int32
-      responses:
-        "400":
-          description: Bad Request
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
           content:
-            '*/*':
+            application/json:
               schema:
-                $ref: '#/components/schemas/ValidationErrorsResponse'
-        "200":
-          description: OK
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: Not Found!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "406":
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /ping:
     get:
       tags:
       - Fraud Check Controller
       summary: Am I alive?
-      operationId: pong_1
+      operationId: pong
       responses:
         "400":
           description: Bad Request
@@ -298,10 +335,36 @@ paths:
                 type: string
         "429":
           description: Too Many Requests
+        "401":
+          description: Unauthorized
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/Error'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: Not Found!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "406":
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     ValidationError:
@@ -311,6 +374,7 @@ components:
           type: string
         message:
           type: string
+      additionalProperties: false
     ValidationErrorsResponse:
       type: object
       properties:
@@ -318,6 +382,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
     CreditCard:
       required:
       - cvv
@@ -328,6 +393,8 @@ components:
       type: object
       properties:
         number:
+          maxLength: 19
+          minLength: 16
           type: string
           description: Card Number - Must be between 16 and 19 digits.  It can contain
             non-digit characters like SPACE or a dash '-'
@@ -345,10 +412,13 @@ components:
           description: Expiry Date of the Card
           format: date-time
         cvv:
+          maxLength: 3
+          minLength: 3
           type: integer
           description: Card Verification Value - Must be 3 digits
           format: int32
           example: 123
+      additionalProperties: false
     FraudCheckPayload:
       required:
       - charge
@@ -359,6 +429,7 @@ components:
           $ref: '#/components/schemas/CreditCard'
         charge:
           $ref: '#/components/schemas/Money'
+      additionalProperties: false
     Money:
       required:
       - amount
@@ -374,13 +445,7 @@ components:
           description: Amount of the transaction
           format: double
           example: 1234.56
-    FraudCheckStub:
-      type: object
-      properties:
-        request:
-          $ref: '#/components/schemas/FraudCheckPayload'
-        response:
-          $ref: '#/components/schemas/FraudStatus'
+      additionalProperties: false
     FraudStatus:
       required:
       - avStatus
@@ -389,31 +454,21 @@ components:
       type: object
       properties:
         cvvStatus:
+          pattern: pass|fail
           type: string
           description: CVV Status the Card - pass or fail
           example: pass
         avStatus:
+          pattern: pass|incorrect address
           type: string
           description: Address Verification Status the Card - pass or incorrect address
-          example: pass
+          example: incorrect address
         overall:
+          pattern: pass|fail|suspicious
           type: string
           description: Overall Fraud Status - pass or fail or suspicious
-          example: pass
-    StubProvider:
-      type: object
-      properties:
-        response:
-          type: object
-        request:
-          type: object
-    Stubs:
-      type: object
-      properties:
-        allStubs:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/StubProvider'
+          example: suspicious
+      additionalProperties: false
   securitySchemes:
     bearerAuth:
       type: http

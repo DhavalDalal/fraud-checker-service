@@ -65,7 +65,7 @@
           "400": {
             "description": "Bad Request",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ValidationErrorsResponse"
                 }
@@ -112,16 +112,6 @@
                 }
               }
             }
-          },
-          "429": {
-            "description": "Too Many Requests",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
           }
         }
       }
@@ -162,6 +152,8 @@
         "type": "object",
         "properties": {
           "number": {
+            "maxLength": 19,
+            "minLength": 16,
             "type": "string",
             "description": "Card Number - Must be between 16 and 19 digits.  It can contain non-digit characters like SPACE or a dash '-'",
             "example": "4485-2847-2013-4093"
@@ -182,6 +174,8 @@
             "format": "date-time"
           },
           "cvv": {
+            "maxLength": 3,
+            "minLength": 3,
             "type": "integer",
             "description": "Card Verification Value - Must be 3 digits",
             "format": "int32",
@@ -233,19 +227,22 @@
         "type": "object",
         "properties": {
           "cvvStatus": {
+            "pattern": "pass|fail",
             "type": "string",
             "description": "CVV Status the Card - pass or fail",
             "example": "pass"
           },
           "avStatus": {
+            "pattern": "pass|incorrect address",
             "type": "string",
             "description": "Address Verification Status the Card - pass or incorrect address",
-            "example": "pass"
+            "example": "incorrect address"
           },
           "overall": {
+            "pattern": "pass|fail|suspicious",
             "type": "string",
             "description": "Overall Fraud Status - pass or fail or suspicious",
-            "example": "pass"
+            "example": "suspicious"
           }
         }
       }
