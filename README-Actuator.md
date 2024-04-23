@@ -826,6 +826,7 @@ revisit http://localhost:9001/actuator/metrics/api.ping.get and you should see t
   ]
 }
 ```
+
 ### Implementing Gauge
 Let us now add a Gauge for measuring the latest overall Fraud Status for a credit card check in the system.
 
@@ -980,6 +981,25 @@ public class FraudCheckerControllerMetricsTest {
 }
 ```
 
+Now, make a ```POST``` request to - http://localhost:9001/check and
+visit http://localhost:9001/actuator/metrics/api.check.fraudstatus_latest and you should see something similar to this:
+
+```json
+{
+  "name": "api.check.fraudstatus_latest",
+  "description": "latest status of fraud check",
+  "measurements": [
+    {
+      "statistic": "VALUE",
+      "value": -1.0
+    }
+  ],
+  "availableTags": [
+    
+  ]
+}
+```
+
 
 ### Implementing Timers
 Let us now measure the time taken by the Fraud Check API to do the Check.
@@ -1130,6 +1150,34 @@ public class FraudCheckerControllerMetricsTest {
     final Map<String, Double> maxTime = (Map<String, Double>) measurements.get(2);
     assertTrue(maxTime.get("value") > 0d);
   }
+}
+```
+
+Point the browser to http://localhost:9001/actuator/metrics/api.check.fraudstatus.execution_time and you should see
+something similar:
+
+```json
+{
+  "name": "api.check.fraudstatus.execution_time",
+  "description": "Time taken to do a fraud check for a card holder",
+  "baseUnit": "seconds",
+  "measurements": [
+    {
+      "statistic": "COUNT",
+      "value": 1.0
+    },
+    {
+      "statistic": "TOTAL_TIME",
+      "value": 4.497798293
+    },
+    {
+      "statistic": "MAX",
+      "value": 4.497798293
+    }
+  ],
+  "availableTags": [
+    
+  ]
 }
 ```
 
