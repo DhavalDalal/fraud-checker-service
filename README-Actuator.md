@@ -674,13 +674,13 @@ Let's say we want to count how many times ```/ping``` was called.  For that matt
 of fact you can choose any endpoint available in the application like the
 login to log failed and successful attempts, count the number of downloads etc...
 
-For us the ```HomeController``` serves the ```/ping``` end-point and to this we need to add the ```Counter```
+For us the ```FraudCheckerController``` serves the ```/ping``` end-point and to this we need to add the ```Counter```
 such that we increment it each time this endpoint is called.
 
 ```java
 @RestController
 @RequestMapping("/")
-public class HomeController {
+public class FraudCheckerController {
 
    public String index() {
       return "index.html";
@@ -767,7 +767,7 @@ public class FraudCheckerTest {
 
       // Then
       assertThat(response.getStatusCode(), is(HttpStatus.OK));
-      assertThat(response.getBody(), is("{ \"PONG\" : \"HomeController is running fine!\" }"));
+      assertThat(response.getBody(), is("{ \"PONG\" : \"FraudCheckerController is running fine!\" }"));
    }
 
    @Test
