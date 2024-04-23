@@ -637,7 +637,7 @@ It converts these metrics in a format acceptable by the monitoring tools.  Micro
 application metrics and the metrics infrastructure developed by different monitoring/observability systems like Prometheus,
 New Relic, Amazon Cloud Watch, Elastic etc... Think it to be like SLF4J, but for observability.
 
-**Micrometer Concepts**
+### Micrometer Concepts
 
 Let us look at the abstractions Micrometer provides:
 * ```Meter``` - is the interface for collecting a set of measurements or metrics about the application.
@@ -670,6 +670,7 @@ In order to gather custom metrics, we have support for:
 
 We now implement custom metrics into the ```/metrics``` end-point.
 
+### Implementing Counter
 Let's say we want to count how many times ```/ping``` was called.  For that matter
 of fact you can choose any endpoint available in the application like the
 login to log failed and successful attempts, count the number of downloads etc...
@@ -698,7 +699,7 @@ But before we add the Counter to this code, we need to make sure that the Counte
 ```MetricsConfig```
 
 ```java
-package com.tsys.springflyway.config;
+package com.tsys.fraud_checker.config;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -767,7 +768,7 @@ public class FraudCheckerTest {
 
       // Then
       assertThat(response.getStatusCode(), is(HttpStatus.OK));
-      assertThat(response.getBody(), is("{ \"PONG\" : \"FraudCheckerController is running fine!\" }"));
+      assertThat(response.getBody(), is("{ \"PONG\" : \"HomeController is running fine!\" }"));
    }
 
    @Test
@@ -825,10 +826,8 @@ revisit http://localhost:9001/actuator/metrics/api.ping.get and you should see t
   ]
 }
 ```
-
-Let us now add two more meters -
-* A Gauge for measuring the latest overall Fraud Status for a credit card check in the system.
-* Time taken by the Fraud Check API to do the Check.
+### Implementing Gauge
+Let us now add a Gauge for measuring the latest overall Fraud Status for a credit card check in the system.
 
 ```java
 @Controller
@@ -845,7 +844,6 @@ public class FraudCheckerController {
    @Autowired
    public FraudCheckerController(VerificationService verificationService, Parser userAgentParser, Counter pingCounter, MeterRegistry meterRegistry) {
       this.verificationService = verificationService;
-      this.userAgentParser = userAgentParser;
       this.pingCounter = pingCounter;
       this.meterRegistry = meterRegistry;
       Gauge.builder("api.check.fraudstatus_latest", () -> latestFraudStatus)
@@ -859,30 +857,13 @@ public class FraudCheckerController {
 
    @PostMapping(value = "check", consumes = "application/json", produces = "application/json")
    public ResponseEntity<FraudStatus> checkFraud(
-           @RequestBody @Valid FraudCheckPayload payload,
-           HttpServletRequest request) {
-
-      Timer.Sample timer = Timer.start(meterRegistry);
-      final var userAgent = Optional.ofNullable(request.getHeader("User-Agent"));
-      final var deviceIdentity = userAgent
-              .map(ua -> {
-                 final Client client = userAgentParser.parse(ua);
-                 return new DeviceIdentity(client.device, client.os, client.userAgent);
-              })
-              .orElse(DeviceIdentity.UNKNOWN);
+           @RequestBody @Valid FraudCheckPayload payload) {
 
       try {
          LOG.info(() -> String.format("{ 'checkFraud' : ' for chargedAmount %s on %s with User Agent %s and the DeviceIdentity is %s'}", payload.charge, payload.creditCard, userAgent, deviceIdentity));
          FraudStatus fraudStatus = verificationService.verifyTransactionAuthenticity(payload.creditCard, payload.charge, deviceIdentity);
          recordLastestFraudStatus(fraudStatus);
-
-         timer.stop(Timer.builder("api.check.fraudstatus.execution_time")
-                 .description("Time taken to do a fraud check for a card holder")
-                 .publishPercentiles(0.25, 0.50, 0.75, 0.95)
-                 .percentilePrecision(2)
-                 .publishPercentileHistogram(true)
-                 .register(meterRegistry));
-
+         
          LOG.info(() -> String.format("{ 'FraudStatus' : '%s'}", fraudStatus));
          final var httpHeaders = new HttpHeaders() {{
             setContentType(MediaType.APPLICATION_JSON);
@@ -906,8 +887,146 @@ public class FraudCheckerController {
 }
 ```
 
+and we add a corresponding ```FraudCheckerControllerMetricsTest``` would be:
 
-**Percentiles and Averages**
+```java
+package com.tsys.fraud_checker;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Tags({
+    @Tag("In-Process"),
+    @Tag("ComponentTest")
+})
+public class FraudCheckerControllerMetricsTest {
+
+  private final Money chargedAmount = new Money(Currency.getInstance("INR"), 1235.45d);
+  private final CreditCard validCard = CreditCardBuilder.make()
+      .withHolder("Jumping Jack")
+      .withIssuingBank("Bank of Test")
+      .withValidNumber()
+      .withValidCVV()
+      .withFutureExpiryDate()
+      .build();
+
+  private static final int CVV_STATUS_PASS = 0;
+  private static final int ADDRESS_VERIFICATION_STATUS_PASS = 0;
+  private static final int DEVICE_IDENTIFICATION_STATUS_PASS = 0;
+
+  @MockBean
+  private Random random;
+
+  @Autowired
+  private FraudCheckerController fraudCheckerController;
+
+  @Autowired
+  private TestRestTemplate client;
+
+  @Test
+  public void chargingAValidCardCapturesTheLatestOverallStatusMetric() throws Exception {
+    // Given
+    final FraudStatus fraudStatus = givenASuccessfulFraudCheckRequestIsMade();
+    final String metricName = "api.check.fraudstatus_latest";
+
+    // When
+    final ResponseEntity<Map> apiCheckLatestFraudStatusMetric = client.getForEntity(String.format("/actuator/metrics/%s", metricName), Map.class);
+
+    // Then
+    assertThatResponseIs200OK(apiCheckLatestFraudStatusMetric);
+
+    final Map metric = apiCheckLatestFraudStatusMetric.getBody();
+    System.out.println("metric = " + metric);
+    assertThat(metric.get("name"), is(metricName));
+    assertThat(metric.get("description"), is("latest status of fraud check"));
+    final List<Map<String, ?>> measurements = (List<Map<String, ?>>) metric.get("measurements");
+    final Map<String, ?> totalUsersValue = measurements.get(0);
+    assertThat(totalUsersValue.get("value"), is(toValue(fraudStatus)));
+  }
+
+  private void assertThatResponseIs200OK(ResponseEntity<Map> response) {
+    assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    assertThat(response.getHeaders().getContentType(), is(new MediaType("application", "json")));
+  }
+
+  private double toValue(FraudStatus fraudStatus) {
+    return switch (fraudStatus.overall) {
+      case FraudStatus.PASS -> 0;
+      case FraudStatus.FAIL -> -1;
+      case FraudStatus.SUSPICIOUS -> 1;
+      default -> -1;
+    };
+  }
+
+  private FraudStatus givenASuccessfulFraudCheckRequestIsMade() {
+    given(random.nextInt(anyInt()))
+        .willReturn(-2000) // for sleepMillis
+        .willReturn(CVV_STATUS_PASS)
+        .willReturn(ADDRESS_VERIFICATION_STATUS_PASS)
+        .willReturn(DEVICE_IDENTIFICATION_STATUS_PASS);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("User-Agent", "Galaxy M5 (Android; ARM Linux Android 14_0_0_r29) Chrome/119.0.0.0");
+    HttpEntity<FraudCheckPayload> payload = new HttpEntity<>(new FraudCheckPayload(validCard, chargedAmount), headers);
+    final ResponseEntity<FraudStatus> fraudStatusResponse = client.postForEntity("/check", payload, FraudStatus.class);
+    final FraudStatus fraudStatus = fraudStatusResponse.getBody();
+    return fraudStatus;
+  }
+}
+```
+
+
+### Implementing Timers
+Let us now measure the time taken by the Fraud Check API to do the Check.
+
+```java
+@Controller
+@Validated
+@RequestMapping("/")
+public class FraudCheckerController {
+
+   ...
+   ...
+
+   @PostMapping(value = "check", consumes = "application/json", produces = "application/json")
+   public ResponseEntity<FraudStatus> checkFraud(
+           @RequestBody @Valid FraudCheckPayload payload) {
+
+      Timer.Sample timer = Timer.start(meterRegistry);
+      try {
+         LOG.info(() -> String.format("{ 'checkFraud' : ' for chargedAmount %s on %s with User Agent %s and the DeviceIdentity is %s'}", payload.charge, payload.creditCard, userAgent, deviceIdentity));
+         FraudStatus fraudStatus = verificationService.verifyTransactionAuthenticity(payload.creditCard, payload.charge, deviceIdentity);
+         recordLastestFraudStatus(fraudStatus);
+
+         timer.stop(Timer.builder("api.check.fraudstatus.execution_time")
+                 .description("Time taken to do a fraud check for a card holder")
+                 .publishPercentiles(0.25, 0.50, 0.75, 0.95)
+                 .percentilePrecision(2)
+                 .publishPercentileHistogram(true)
+                 .register(meterRegistry));
+
+         LOG.info(() -> String.format("{ 'FraudStatus' : '%s'}", fraudStatus));
+         final var httpHeaders = new HttpHeaders() {{
+            setContentType(MediaType.APPLICATION_JSON);
+         }};
+
+         return new ResponseEntity<>(fraudStatus, httpHeaders, HttpStatus.OK);
+      } catch (InterruptedException e) {
+         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   ...
+   ...
+}
+```
+
+#### Percentiles and Averages
 
 1. **25th Percentile** - Also known as the first, or lower, quartile. The 25th percentile
    is the value at which 25% of the answers lie below that value, and 75% of the answers lie
@@ -983,27 +1102,9 @@ public class FraudCheckerControllerMetricsTest {
 
   @Autowired
   private TestRestTemplate client;
-
-  @Test
-  public void chargingAValidCardCapturesTheLatestOverallStatusMetric() throws Exception {
-    // Given
-    final FraudStatus fraudStatus = givenASuccessfulFraudCheckRequestIsMade();
-    final String metricName = "api.check.fraudstatus_latest";
-
-    // When
-    final ResponseEntity<Map> apiCheckLatestFraudStatusMetric = client.getForEntity(String.format("/actuator/metrics/%s", metricName), Map.class);
-
-    // Then
-    assertThatResponseIs200OK(apiCheckLatestFraudStatusMetric);
-
-    final Map metric = apiCheckLatestFraudStatusMetric.getBody();
-    System.out.println("metric = " + metric);
-    assertThat(metric.get("name"), is(metricName));
-    assertThat(metric.get("description"), is("latest status of fraud check"));
-    final List<Map<String, ?>> measurements = (List<Map<String, ?>>) metric.get("measurements");
-    final Map<String, ?> totalUsersValue = measurements.get(0);
-    assertThat(totalUsersValue.get("value"), is(toValue(fraudStatus)));
-  }
+  
+  ...
+  ...
 
   @Test
   public void chargingAValidCardCapturesTimeTakenByTheRequestToRespondMetric() {
@@ -1028,35 +1129,6 @@ public class FraudCheckerControllerMetricsTest {
     assertTrue(totalTime.get("value") > 0d);
     final Map<String, Double> maxTime = (Map<String, Double>) measurements.get(2);
     assertTrue(maxTime.get("value") > 0d);
-  }
-
-  private void assertThatResponseIs200OK(ResponseEntity<Map> response) {
-    assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    assertThat(response.getHeaders().getContentType(), is(new MediaType("application", "json")));
-  }
-
-  private double toValue(FraudStatus fraudStatus) {
-    return switch (fraudStatus.overall) {
-      case FraudStatus.PASS -> 0;
-      case FraudStatus.FAIL -> -1;
-      case FraudStatus.SUSPICIOUS -> 1;
-      default -> -1;
-    };
-  }
-
-  private FraudStatus givenASuccessfulFraudCheckRequestIsMade() {
-    given(random.nextInt(anyInt()))
-        .willReturn(-2000) // for sleepMillis
-        .willReturn(CVV_STATUS_PASS)
-        .willReturn(ADDRESS_VERIFICATION_STATUS_PASS)
-        .willReturn(DEVICE_IDENTIFICATION_STATUS_PASS);
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.set("User-Agent", "Galaxy M5 (Android; ARM Linux Android 14_0_0_r29) Chrome/119.0.0.0");
-    HttpEntity<FraudCheckPayload> payload = new HttpEntity<>(new FraudCheckPayload(validCard, chargedAmount), headers);
-    final ResponseEntity<FraudStatus> fraudStatusResponse = client.postForEntity("/check", payload, FraudStatus.class);
-    final FraudStatus fraudStatus = fraudStatusResponse.getBody();
-    return fraudStatus;
   }
 }
 ```
