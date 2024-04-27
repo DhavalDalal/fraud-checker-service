@@ -1052,19 +1052,29 @@ public class FraudCheckerController {
    is the value at which 25% of the answers lie below that value, and 75% of the answers lie
    above that value.
 
-2. **50th percentile (median)** - The 50th percentile or median is the value in the very middle of a set of measurements.
-   In other words, 50% of measurements are under the median and 50% are over the median.  Use the median as the
-   "best case" when it comes to performance data, since it only represents what
-   half of your users will experience. The median is typically a stable measurement, so it's good for seeing
-   long-term trends. However, the median will typically not show short-term trends or anomalies.
+2. **50th percentile (median)** - The 50th percentile or median is the value in the very middle of a set of
+   measurements.  The median cuts the data set in half.  Half of the answers lie below the median and half lie
+   above the median.  In other words, 50% of measurements are under the median and 50% are over the median.
+   _The median is typically a stable measurement, so it's good for seeing long-term trends. However, the median
+   will typically not show short-term trends or anomalies._  Use the median as the "best case" when it comes to
+   performance data, since it only represents what half of your users will experience.
 
-3. **75th percentile** - The 75th percentile is the value where 75% of all measurements are under it, and 25% of
-   measurements are over it.  It is the percentile that Google recommends using when monitoring Web Vitals.
+3. **75th percentile** - Also known as the third, or upper, quartile.  The 75th percentile is the value where
+   75% of all measurements are under it, and 25% of measurements are over it.  It is the percentile that Google
+   recommends using when monitoring web vitals like - time to first byte, render time of the largest image or text
+   block visible in the viewport, relative to when the user first navigated to the page, etc...  The 75th percentile
+   is a good balance of representing the vast majority of measurements, and not being impacted by outliers.
+   _While not as stable as the median, the 75th percentile is a good choice for seeing medium- to long-term trends._
 
 4. **95th percentile** - The 95th percentile is the value where 95% of all measurements are under it, and 5% of
    measurements are over it. Use the 95th percentile to encompasses the experience of almost all of your users,
-   with only the most severe outliers excluded. This makes it perfect for spotting short-term trends and anomalies.
-   However, the 95th percentile can be volatile, and may not be suitable for plotting long-term trends.
+   with only the most severe outliers excluded. _This makes it perfect for spotting short-term trends and anomalies.
+   However, the 95th percentile can be volatile, and may not be suitable for plotting long-term trends._  Historically,
+   a lot of services are defined as something like "the p95 latency may not exceed 0.25 seconds."  A way of phrasing
+   this same requirement so that we do get an accurate number of how close we are to violating our service level is
+   "the proportion of requests in which latency exceeds 0.25 seconds must be less than 5 percent."  Instead of
+   approximating the p95 and seeing if it’s below or above 0.25 seconds, we precisely define the percentage of requests
+   exceeding 0.25 seconds.
 
 5. **Average (arithmetic mean)** - The average is calculated by adding every measurement together, and then
    dividing it by the number of measurements. One important and slightly confusing thing about the average
