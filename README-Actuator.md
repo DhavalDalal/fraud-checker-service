@@ -1011,7 +1011,7 @@ Let us now measure the time taken by the Fraud Check API to do the Check.
 public class FraudCheckerController {
 
    ...
-   ...
+           ...
 
    @PostMapping(value = "check", consumes = "application/json", produces = "application/json")
    public ResponseEntity<FraudStatus> checkFraud(
@@ -1042,7 +1042,7 @@ public class FraudCheckerController {
    }
 
    ...
-   ...
+           ...
 }
 ```
 
@@ -1106,60 +1106,60 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Tags({
-    @Tag("In-Process"),
-    @Tag("ComponentTest")
+        @Tag("In-Process"),
+        @Tag("ComponentTest")
 })
 public class FraudCheckerControllerMetricsTest {
 
-  private final Money chargedAmount = new Money(Currency.getInstance("INR"), 1235.45d);
-  private final CreditCard validCard = CreditCardBuilder.make()
-      .withHolder("Jumping Jack")
-      .withIssuingBank("Bank of Test")
-      .withValidNumber()
-      .withValidCVV()
-      .withFutureExpiryDate()
-      .build();
+   private final Money chargedAmount = new Money(Currency.getInstance("INR"), 1235.45d);
+   private final CreditCard validCard = CreditCardBuilder.make()
+           .withHolder("Jumping Jack")
+           .withIssuingBank("Bank of Test")
+           .withValidNumber()
+           .withValidCVV()
+           .withFutureExpiryDate()
+           .build();
 
-  private static final int CVV_STATUS_PASS = 0;
-  private static final int ADDRESS_VERIFICATION_STATUS_PASS = 0;
-  private static final int DEVICE_IDENTIFICATION_STATUS_PASS = 0;
+   private static final int CVV_STATUS_PASS = 0;
+   private static final int ADDRESS_VERIFICATION_STATUS_PASS = 0;
+   private static final int DEVICE_IDENTIFICATION_STATUS_PASS = 0;
 
-  @MockBean
-  private Random random;
+   @MockBean
+   private Random random;
 
-  @Autowired
-  private FraudCheckerController fraudCheckerController;
+   @Autowired
+   private FraudCheckerController fraudCheckerController;
 
-  @Autowired
-  private TestRestTemplate client;
+   @Autowired
+   private TestRestTemplate client;
   
   ...
-  ...
+          ...
 
-  @Test
-  public void chargingAValidCardCapturesTimeTakenByTheRequestToRespondMetric() {
-    // Given
-    final FraudStatus fraudStatus = givenASuccessfulFraudCheckRequestIsMade();
-    final String metricName = "api.check.fraudstatus.execution_time";
+   @Test
+   public void chargingAValidCardCapturesTimeTakenByTheRequestToRespondMetric() {
+      // Given
+      final FraudStatus fraudStatus = givenASuccessfulFraudCheckRequestIsMade();
+      final String metricName = "api.check.fraudstatus.execution_time";
 
-    // When
-    final ResponseEntity<Map> executionTimeMetric = client.getForEntity(String.format("/actuator/metrics/%s", metricName), Map.class);
+      // When
+      final ResponseEntity<Map> executionTimeMetric = client.getForEntity(String.format("/actuator/metrics/%s", metricName), Map.class);
 
-    // Then
-    assertThatResponseIs200OK(executionTimeMetric);
+      // Then
+      assertThatResponseIs200OK(executionTimeMetric);
 
-    final Map metric = executionTimeMetric.getBody();
-    assertThat(metric.get("name"), is(metricName));
-    assertThat(metric.get("description"), is("Time taken to do a fraud check for a card holder"));
-    assertThat(metric.get("baseUnit"), is("seconds"));
-    final List<Map<String, ?>> measurements = (List<Map<String, ?>>) metric.get("measurements");
-    final Map<String, ?> callCount = measurements.get(0);
-    assertThat(callCount.get("value"), is(2.0d));
-    final Map<String, Double> totalTime = (Map<String, Double>) measurements.get(1);
-    assertTrue(totalTime.get("value") > 0d);
-    final Map<String, Double> maxTime = (Map<String, Double>) measurements.get(2);
-    assertTrue(maxTime.get("value") > 0d);
-  }
+      final Map metric = executionTimeMetric.getBody();
+      assertThat(metric.get("name"), is(metricName));
+      assertThat(metric.get("description"), is("Time taken to do a fraud check for a card holder"));
+      assertThat(metric.get("baseUnit"), is("seconds"));
+      final List<Map<String, ?>> measurements = (List<Map<String, ?>>) metric.get("measurements");
+      final Map<String, ?> callCount = measurements.get(0);
+      assertThat(callCount.get("value"), is(2.0d));
+      final Map<String, Double> totalTime = (Map<String, Double>) measurements.get(1);
+      assertTrue(totalTime.get("value") > 0d);
+      final Map<String, Double> maxTime = (Map<String, Double>) measurements.get(2);
+      assertTrue(maxTime.get("value") > 0d);
+   }
 }
 ```
 
@@ -1332,3 +1332,15 @@ You will see something similar:
    ]
 }
 ```
+
+Instead of adding @Timed notation to individual methods, you can add it to the
+whole class like this:
+
+```java
+@Timed("api.check.fraudstatus", histogram = true, percentiles = {0.95, 0.75, 0.5, 0.25})
+public class FraudCheckerController {
+   ...
+}
+```
+
+and each method will appear in the tag.
