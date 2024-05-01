@@ -127,6 +127,10 @@ Note: you can put ```-i``` at the end of each to get further information while r
 2. All Tasks, use ```gradle tasks --all```
 3. Build, use ```gradle clean build```
 
+### (Re-)Generate IDE Specific files
+* To generate or regenerate after adding/removing a new dependency, for creating an Eclipse project: use ```gradle cleanEclipse eclipse```
+* To generate or regenerate after adding/removing a new dependency, for creating an Idea project: use ```gradle cleanIdea idea```
+
 ### To Build Docker Images, Running and Stopping them using Gradle
 1. Build Docker Image, use ```gradle docker```
 2. To Push Docker Image to Docker Hub, use ```gradle dockerPush```
