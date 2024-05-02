@@ -159,7 +159,7 @@ NOTE: You may find out the container id using ```docker ps```.  Once inside the 
 NOTE: If you don't have an account on Docker Hub, please create one by visiting [https://hub.docker.com/](https://hub.docker.com/)
 
 ## Postman Collections
-1. In your workspace, click ```Environments``` and import the development environment from [Fraud_Checker_Mervice_Development.postman_environment.json](src%2Ftest%2Fresources%2FFraud_Checker_Mervice_Development.postman_environment.json)
+1. In your workspace, click ```Environments``` and import the development environment from [Fraud_Checker_Service_Development.postman_environment.json](src%2Ftest%2Fresources%2FFraud_Checker_Service_Development.postman_environment.json)
 2. In your workspace, click ```Collections``` and import the url collections from [Fraud_Checker_Service.postman_collection.json](src%2Ftest%2Fresources%2FFraud_Checker_Service.postman_collection.json)
 
 ## Swagger Documentation
